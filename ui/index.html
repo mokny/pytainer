@@ -1,1 +1,21 @@
-<b>asd</b> dsfsdf
+<script src="js/libs/jquery-3.6.4.min.js"></script>
+<script src="js/master.js"></script>
+
+<body id="body">
+
+    <input type="text" id="username" ><br><br>
+    <input type="password" id="password" ><br><br>
+  </form>
+  <button onclick="auth()">te</button>
+</body>
+
+  <script>
+    function auth() {
+        api_request('auth', {'username': $('#username').val(), 'password': $('#password').val()}, function(response) {
+            console.log(response)
+            if (response['OK']) {
+                ajax_load('body', 'tpl/framework.html')
+            }
+        }) 
+    }
+  </script>

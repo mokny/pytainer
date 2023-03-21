@@ -10,3 +10,13 @@ def create(username, password, permissions):
     }
     id = db.insert('users', newuser)
     logger.info('New user created. ID: ' + str(id))
+
+def authenticate(username, password):
+    results = db.get('SELECT * FROM users WHERE username="'+db.esc(username)+'"')
+    if len(results) > 0:
+        if results[0]['password'] == cryptolib.sha256(password):
+            return results[0]
+        else:
+            return False
+    else:
+        return False
