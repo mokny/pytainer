@@ -15,12 +15,16 @@ During the installation process, you will be asked for admin user credentials. M
 
 After completing the installation process, run pyTainer with the following command:
 ```
-./pyTainer.py
+./pyTainer.py -l
+```
+You will notice that pyTainer is now running in the foreground with excessive logging (due to parameter `-l`). To run pyTainer in the background use the following command:
+
+```
+./pyTainer.py --bg
 ```
 
-
 #### Notice
-When running pyTainer the first time, this python module `gitpython` will be automatically downloaded and installed via PIP.
+When running pyTainer the first time, the python module `gitpython` will be automatically downloaded and installed via PIP.
 
 ## Accessing the Webpanel
 In case you did not change settings inside the `config.ini`, simply call `http://<myipaddress>:6880`and login with your username and password.
