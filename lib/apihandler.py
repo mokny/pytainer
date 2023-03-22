@@ -2,6 +2,7 @@ import json
 import users
 import cryptolib
 import repos
+import logger
 
 def apiCall(request, path, data):
     response = {
@@ -64,6 +65,11 @@ def apiCall(request, path, data):
             else:
                 response['OK'] = False
                 response['ERR'] = 'Repository could not be cloned'
+
+    elif path == '/getlogs':
+        if response['AUTHED']:
+            response['OK'] = True
+            response['DATA'] = logger.getHistory()
 
 
     else:

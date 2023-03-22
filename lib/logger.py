@@ -8,6 +8,7 @@ LEVEL_ERROR = 3
 LEVEL_NONE = 30000
 
 loggingLevel = 1
+history = []
 
 def setLevel(level):
     global loggingLevel
@@ -46,5 +47,9 @@ def _log(level, text):
     levelstr[LEVEL_ERROR] = 'ERROR'
 
     if (level >= loggingLevel):
-        print(str(levelstr[level]) + name + ' ' + str(datetime.datetime.now()) + '> ' + str(text))
+        outstr = (str(levelstr[level]) + name + ' ' + str(datetime.datetime.now()) + '> ' + str(text))
+        print(outstr)
+        history.append(outstr)
 
+def getHistory():
+    return history
