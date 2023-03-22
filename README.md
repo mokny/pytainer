@@ -29,6 +29,20 @@ To run pyTainer in the background use the following command:
 #### Notice
 When running pyTainer the first time, the python module `gitpython` will be automatically downloaded and installed via PIP.
 
+## Advanced configuration
+This is optional. pyTainer has good default settings that should suit your needs. But if you want to, edit the file `config.ini` at the main directory.
+```
+[WEBSERVER]
+HOST = 0.0.0.0
+PORT = 6880
+
+[REPOS]
+ROOT = /my/path/where/i/wanna/store/programs
+
+[DATABASE]
+FILENAME = mydatabase.sqlite
+```
+
 ## Accessing the Webpanel
 In case you did not change settings inside the `config.ini`, simply call `http://<myipaddress>:6880`and login with your username and password.
 
