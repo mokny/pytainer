@@ -7,6 +7,8 @@ import os
 import random
 import urllib
 import apihandler
+import uuid
+import vars
 
 sessions = {}
 
@@ -25,7 +27,9 @@ class clsPytainerServer(BaseHTTPRequestHandler):
         self.handleRequest('POST', self.path, post_data.decode("utf-8").strip())
 
     def generate_sid(self):
-        return "".join(str(random.randint(1,9)) for _ in range(100))
+        sid = "".join(str(random.randint(1,9)) for _ in range(100))
+        sid += str(uuid.uuid4()) + str(time.time())
+        return sid
 
     def getSession(self):
         self.user = False
@@ -47,6 +51,8 @@ class clsPytainerServer(BaseHTTPRequestHandler):
             self.user = sessions[self.sid]
         else:
             self.user = sessions[self.sid]
+        logger.info("SID: " + self.sid)
+        logger.info("USER: " + str(self.user))
 
 
     def sessionWrite(self, key, value):
@@ -89,9 +95,9 @@ class clsPytainerServer(BaseHTTPRequestHandler):
         self.wfile.write(bytes(data, "utf-8"))
 
     def serveFile(self, path):
-        if os.path.isfile('ui' + path):
+        if os.path.isfile(vars.path + '/ui' + path):
 
-            file = open('ui' + path, "r")
+            file = open(vars.path + '/ui' + path, "r")
             data = file.read()
             file.close()            
 

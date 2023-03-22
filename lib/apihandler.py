@@ -1,6 +1,7 @@
 import json
 import users
 import cryptolib
+import repos
 
 def apiCall(request, path, data):
     response = {
@@ -33,7 +34,36 @@ def apiCall(request, path, data):
 
 
     elif path == '/ready':
-        response['OK'] = True
+        if response['AUTHED']:
+            response['OK'] = True
+
+    elif path == '/repolist':
+        if response['AUTHED']:
+            response['OK'] = True
+            response['DATA'] = repos.getList()
+
+    elif path == '/execrepo':
+        if response['AUTHED']:
+            response['OK'] = True
+            response['DATA'] = repos.exec(data['name'])
+
+    elif path == '/stoprepo':
+        if response['AUTHED']:
+            response['OK'] = True
+            response['SUCCESS'] = repos.stop(data['name'])
+
+    elif path == '/reloadrepos':
+        if response['AUTHED']:
+            response['OK'] = True
+            response['SUCCESS'] = repos.scanFolder()
+
+    elif path == '/gitfetch':
+        if response['AUTHED']:
+            if repos.gitfetch(data['name'], data['url']):
+                response['OK'] = True
+            else:
+                response['OK'] = False
+                response['ERR'] = 'Repository could not be cloned'
 
 
     else:

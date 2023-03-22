@@ -1,9 +1,32 @@
 import db
 import logger
 import users
+import config
+import os
+import shutil
+import vars
+import pip
+
+def removeDirectories():
+    logger.out("Removing old Directories")
+    if os.path.isdir(config.getStr('REPOS','ROOT',vars.path + '/repos')):
+        shutil.rmtree(vars.path+'/repos', True)
+
+def createDirectories():
+    logger.out("Creating Directories")
+
+    #Repository Root
+    if not os.path.isdir(config.getStr('REPOS','ROOT',vars.path + '/repos')):
+        os.mkdir(config.getStr('REPOS','ROOT', vars.path + '/repos'))
 
 def fresh():
-    logger.info("Fresh Database Installation...")
+    logger.out("Starting fresh installation of pyTainer")
+    logger.out(vars.path)
+
+    removeDirectories()
+    createDirectories()
+
+    logger.out("Fresh Database Installation...")
     db.clear()
     db.ex('''
         CREATE TABLE users (
@@ -14,10 +37,20 @@ def fresh():
         );
     ''')
 
-    print("Enter Admin Username:")
+
+    logger.out("Enter Admin Username:")
     username = input()
-    print("Enter Admin Password:")
+    logger.out("Enter Admin Password:")
     password = input()
 
     users.create(username,password,123)
 
+def uninstall():
+    logger.out('Removing GITPYTHON...')
+    pip.remove('gitpython')
+    
+    logger.out('Deleting Database...')
+    os.remove(config.getStr('DATABASE','FILENAME',vars.path + '/database.sqlite'))
+
+    logger.out('Removing Directories...')
+    removeDirectories()

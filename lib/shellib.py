@@ -52,4 +52,22 @@ def _killallinstances():
     print("Killing all instances of " + _mainfile + " ...")
     os.system('pkill -f ' + _mainfile)
 
+def writePIDFile(path):
+    try:
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(str(os.getpid()))
+        return True
+    except:
+        return False
+
+def readPIDFile(path):
+    try:
+        pid_file = open(path, 'r')
+        data = pid_file.read()
+        pid_file.close()
+        return int(data)
+    except:
+        return False
+    
+    
 getOptions(None)
