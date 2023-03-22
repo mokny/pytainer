@@ -34,3 +34,9 @@ In case you did not change settings inside the `config.ini`, simply call `http:/
 
 ## Installing programs on pyTainer
 Basically you can simply create a new directory in the `repos` directory and add the `init.py` as the main executable file. You can also install repositories from git by entering the URL and giving it a name.
+
+## Creating own pyTainer Programs
+There is an example available [here](https://github.com/mokny/pytainer_example). Basically every simple python script can be a pyTainer program, as long as the main file is called `init.py`.
+
+## Running non Python Programs
+tbd
