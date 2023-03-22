@@ -54,3 +54,6 @@ There is an example available [here](https://github.com/mokny/pytainer_example).
 
 ## Running non Python Programs
 tbd
+
+## Making a backup
+Making a backup is quiet easy. Just copy the complete pyTainer directory. This will backup everything, including users, programs etc. Note: Some programs may change files outside their repo directory. These changes have to be saved seperately!
