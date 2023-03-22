@@ -5,4 +5,7 @@ pyTainer is a python based container framework, that lets you manage predefined 
 
 ### Manual installation
 Download and extract pyTainer. Run the installation process:
-`./pyTainer.py -i fresh`
+```
+./pyTainer.py -i fresh
+```
+During the installation process, you will be asked for admin user credentials. Make sure to pick a secure username and password.
