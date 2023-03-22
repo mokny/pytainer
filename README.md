@@ -13,6 +13,12 @@ Download and extract pyTainer. Run the installation process:
 ```
 During the installation process, you will be asked for admin user credentials. Make sure to pick a secure username and password.
 
+After completing the installation process, run pyTainer with the following command:
+```
+./pyTainer.py
+```
+
+
 #### Notice
 When running pyTainer the first time, this python module `gitpython` will be automatically downloaded and installed via PIP.
 
