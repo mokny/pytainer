@@ -17,7 +17,9 @@ After completing the installation process, run pyTainer with the following comma
 ```
 ./pyTainer.py -l
 ```
-You will notice that pyTainer is now running in the foreground with excessive logging (due to parameter `-l`). To run pyTainer in the background use the following command:
+You will notice that pyTainer is now running in the foreground with excessive logging (due to parameter `-l`). You can always terminate it by hitting `Ctrl+C`.
+
+To run pyTainer in the background use the following command:
 
 ```
 ./pyTainer.py --bg
