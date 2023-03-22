@@ -1,0 +1,12 @@
+Name: <input type="text" id="gitname">
+URL: <input type="text" id="giturl">
+<button onclick="gitinstall()">Install</button>
+
+<script>
+    function gitinstall() {
+        api_request('gitfetch', {'url':$('#giturl').val(),'name': $('#gitname').val()}, function(response) {
+            console.log(response);
+        })
+
+    }
+</script>

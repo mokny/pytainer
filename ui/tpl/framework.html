@@ -1,19 +1,17 @@
+<div>
+    <div onclick="ajax_load('content','tpl/repos.html')">Repos</div>
+    <div onclick="ajax_load('content','tpl/gitfetch.html')">Custom Repos</div>
+    <div onclick="ajax_load('content','tpl/pip.html')">PIP</div>
+</div>
+
+<div id="content"></div>
+
 <script>
         api_request('ready', false, function(response) {
             console.log(response)
         }) 
-
-        api_request('repolist', false, function(response) {
-            console.log(response)
-        }) 
-
 </script>
 
 
-<button onclick="api_request('gitfetch', {'url':'https://github.com/maxp/metar-decoder','name': 'lala'}, function(response) {console.log(response)}) "></button>
-<button onclick="api_request('execrepo', {'name': 'test'}, function(response) {console.log(response)}) ">Start</button>
-<button onclick="api_request('stoprepo', {'name': 'test'}, function(response) {console.log(response)}) ">Stop</button>
-<button onclick="api_request('reloadrepos', false, function(response) {console.log(response)}) ">Reload</button>
-<button onclick="api_request('getlogs', false, function(response) {console.log(response)}) ">Logs</button>
 
 

@@ -1,0 +1,40 @@
+<table>
+    <thead>
+        <th>Name</th>
+        <th>Path</th>
+        <th>Running</th>
+        <th>Start</th>
+        <th>Stop</th>
+    </thead>
+    <tbody id="repolist"></tbody>
+</table>
+
+<script>
+        api_request('repolist', false, function(response) {
+            console.log(response)
+            var html = '';
+            for (reponame in response.DATA) {
+                var repo = response.DATA[reponame];
+
+                html += '<tr>';
+                    html += '<td>'+repo.name+'</td>';
+                    html += '<td>'+repo.path+'</td>';
+                    html += '<td>'+repo.running+'</td>';
+                    html += '<td><button onclick="startRepo(\''+repo.name+'\')">Start</button></td>';
+                    html += '<td><button onclick="stopRepo(\''+repo.name+'\')">Stop</button></td>';
+                html += '</tr>';
+            }
+            $('#repolist').html(html);
+        }) 
+
+        function startRepo(name) {
+            api_request('execrepo', {'name': name}, function(response) {console.log(response)}) 
+        }
+
+        function stopRepo(name) {
+            api_request('stoprepo', {'name': name}, function(response) {console.log(response)}) 
+        }
+</script>
+
+<button onclick="api_request('reloadrepos', false, function(response) {console.log(response)}) ">Reload</button>
+<button onclick="api_request('getlogs', false, function(response) {console.log(response)}) ">Logs</button>
