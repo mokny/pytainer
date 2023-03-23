@@ -4,7 +4,7 @@ pyTainer is a python based container framework, that lets you manage predefined 
 ## Requirements
 - Python 3.9.x
 
-## Best use
+## Best practice
 Basically you can use one pyTainer to maintain all your programs. But as you can run multiple instances of pyTainer (on different ports), it might be a good idea to run one pyTainer for one project. For example: A pyhton server, a log manager, a notification service and a backup service runs on pyTainer A. Your smart home programs run on pyTainer B.
 
 ## Installation
