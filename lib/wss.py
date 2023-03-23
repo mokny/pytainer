@@ -7,8 +7,6 @@ import logger
 server = False
 sessions = {}
 
-
-
 def send(client, method, data):
     s = {
         'M': method,
@@ -47,24 +45,12 @@ def onData(client, data):
         pass
 
 def onDisconnect(client, data):
-    logger.info("DDDIIIIIIISSSSCOOOOO")
-
     if 'sid' in client.vars:
         del sessions[client.vars['sid']]
-        logger.info("WSS SESSIONS")
-        logger.info(sessions)
-    pass
 
 def init():
     server = socklib.Server(config.getStr('WEBSERVER','HOST','0.0.0.0'), config.getInt('WEBSERVER','SOCKETPORT',6881), 'WEBSOCKET')                  # Set the server to any hostname, port 50000
-#vars.var['server_ui'].setHandler("HANDSHAKE", handler_ui.onHandshake)                  # Define Handler function for Server Log
-#vars.var['server_ui'].setHandler("LOG", handler_ui.onLog)                  # Define Handler function for Server Log
-#vars.var['server_ui'].setHandler("PRECONNECT", handler_ui.onPreConnect)    # Define Handler function for incoming connection
-#vars.var['server_ui'].setHandler("CONNECT", handler_ui.onConnect)          # Define Handler function for connection established
-#vars.var['server_ui'].setHandler("DISCONNECT", handler_ui.onDisconnect)    # Define Handler function for client disconnected
     server.setHandler("HANDSHAKE", onHandshake)                # Define Handler function for received data
     server.setHandler("DATA", onData)                # Define Handler function for received data
     server.setHandler("DISCONNECT", onDisconnect)                # Define Handler function for received data
-#vars.var['server_ui'].setHandler("ERROR", handler_ui.onError)              # Define Handler function for Server-Errors
-#vars.var['server_ui'].setHandler("BLOCKED", handler_ui.onBlocked)          # Define Handler function for Blocked IP handling
     server.start()

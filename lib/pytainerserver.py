@@ -84,7 +84,10 @@ class clsPytainerServer(BaseHTTPRequestHandler):
         
         self.getSession()
         self.send_response(200)
-        self.send_header("Content-type", "text/html")
+        if path.endswith('.css'):
+            self.send_header("Content-type", "text/css")
+        else:
+            self.send_header("Content-type", "text/html")
         for morsel in self.cookie.values():
             self.send_header("Set-Cookie", morsel.OutputString())
         self.end_headers()

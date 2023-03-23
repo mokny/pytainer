@@ -16,10 +16,10 @@ function wss_connect(port) {
         method = data.M;
         payload = data.D;
         if (method == 'APPRUN') {
-            $('#apprunning_'+payload).html("True");
+            $('#apprunning_'+payload).html("true");
         }
         if (method == 'APPSTOP') {
-            $('#apprunning_'+payload).html("False");
+            $('#apprunning_'+payload).html("false");
         }
         if (method == 'CONSOLE') {
             if (!(payload.R in output)) {

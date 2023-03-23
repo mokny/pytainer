@@ -14,6 +14,7 @@ import subprocess
 import contextlib, io
 from multiprocessing import Process
 import wss
+import uuid
 
 try:
     import toml as tomlreader
@@ -38,10 +39,8 @@ def scanFolder():
             tomlpath = folder + '/pytainer.toml'
             
             cfg = readManifest(tomlpath)
-            print(cfg)
 
             modulename = cfg['app']['ident']
-
 
             repos[modulename] = {
                 'name': modulename,
@@ -76,14 +75,16 @@ def scanFolder():
 
 
 def exec(modulename):
-    if modulename in repos:
-        threads[modulename] = RepoThread()
-        threads[modulename].setRepo(repos[modulename])
-        threads[modulename].start()
-        return True
-    else:
-        logger.error('Module ' + modulename + ' not found.')
-        return False
+    if not isRunning(modulename):
+        if modulename in repos:
+            threads[modulename] = RepoThread()
+            threads[modulename].setRepo(repos[modulename])
+            threads[modulename].start()
+            return True
+        else:
+            logger.error('Module ' + modulename + ' not found.')
+            return False
+    return False
 
 def stop(modulename):
     if isRunning(modulename):
@@ -115,19 +116,36 @@ def getJSONList():
     return json.dumps(repoinfos)
 
 def remove(name):
-    if os.path.isdir(config.getStr('REPOS','ROOT', vars.path + '/repos') + '/' + name):
-        try:
-            shutil.rmtree(config.getStr('REPOS','ROOT', vars.path + '/repos')+ '/' + name, True)
-            logger.info('Repo ' + name + ' removed.')
-        except Exception as ex:
-            logger.error('Repo ' + name + ' could not be removed. Error:' + str(ex))
+    if not isRunning(name):
+        if name in repos:
+            path = repos[name]['path']
+            if os.path.isdir(path):
+                try:
+                    shutil.rmtree(path, True)
+                    logger.info('Repo ' + name + ' removed.')
+                    del repos[name]
+                    del repoinfos[name]
+                    scanFolder()
+                    return True
+                except Exception as ex:
+                    logger.error('Repo ' + name + ' could not be removed. Error:' + str(ex))
+                    return False
+            else:
+                logger.error('Repo path ' + path + ' not found.')
+                return False
+        else:
+            logger.error('Repo ' + name + ' not found.')
+            return False
     else:
-        logger.error('Repo ' + name + ' not found.')
+        logger.error('Repo ' + name + ' is running and can not be removed!')
+        return False
 
-def gitfetch(name, url):
+def gitfetch(url):
+    foldername = str(uuid.uuid4())
     logger.info('Fetching GIT from url ' + url)
     try:
-        git.Repo.clone_from(url, config.getStr('REPOS','ROOT', vars.path + '/repos') + '/' + name)
+        git.Repo.clone_from(url, config.getStr('REPOS','ROOT', vars.path + '/repos') + '/' + foldername)
+        scanFolder()
         return True
     except Exception as ex:
         logger.error("Could not fetch Repository from " + url + " Error: " + str(ex))

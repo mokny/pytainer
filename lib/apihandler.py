@@ -56,6 +56,11 @@ def apiCall(request, path, data):
             response['OK'] = True
             response['SUCCESS'] = repos.stop(data['name'])
 
+    elif path == '/removerepo':
+        if response['AUTHED']:
+            response['OK'] = True
+            response['SUCCESS'] = repos.remove(data['name'])
+
     elif path == '/reloadrepos':
         if response['AUTHED']:
             response['OK'] = True
@@ -63,7 +68,7 @@ def apiCall(request, path, data):
 
     elif path == '/gitfetch':
         if response['AUTHED']:
-            if repos.gitfetch(data['name'], data['url']):
+            if repos.gitfetch(data['url']):
                 response['OK'] = True
             else:
                 response['OK'] = False

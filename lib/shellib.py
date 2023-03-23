@@ -45,7 +45,7 @@ def getOptions(handler):
 
 def _runbackground(arguments):
     print("Running " + _mainfile + " in background...")
-    os.system('nohup ./' + _mainfile + ' ' + arguments + ' >/dev/null 2>&1 &')
+    os.system('nohup python ./' + _mainfile + ' ' + arguments + ' >/dev/null 2>&1 &')
     sys.exit()
 
 def _killallinstances():

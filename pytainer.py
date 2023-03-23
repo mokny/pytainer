@@ -107,12 +107,6 @@ shellib.writePIDFile(vars.path + '/tmp/pid.txt')
 db.open(config.getStr('DATABASE','FILENAME',vars.path + '/database.sqlite'))
 
 repos.scanFolder()
-print(repos.getJSONList())
-
-repos.remove('tmp')
-#repos.gitfetch('tmp', 'https://github.com/maxp/metar-decoder')
-logger.info(db.get('SELECT * FROM users'))
-
 wss.init()
 
 pytainerserver.listen(config.getStr('WEBSERVER','HOST','0.0.0.0'), config.getInt('WEBSERVER','PORT',6880))
