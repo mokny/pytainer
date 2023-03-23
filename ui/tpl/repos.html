@@ -24,11 +24,12 @@
                     html += '<td>'+repo.config.app.version+'</td>';
                     html += '<td>'+repo.config.info.author+'</td>';
                     html += '<td>'+repo.path+'</td>';
-                    html += '<td>'+repo.running+'</td>';
+                    html += '<td id="apprunning_'+repo.config.app.ident+'">'+repo.running+'</td>';
                     html += '<td>'+repo.config.app.standalone+'</td>';
                     html += '<td><button onclick="startRepo(\''+repo.name+'\')">Start</button></td>';
                     html += '<td><button onclick="stopRepo(\''+repo.name+'\')">Stop</button></td>';
                     html += '<td><button onclick="getRepoOutput(\''+repo.name+'\')">Output</button></td>';
+                    html += '<td><button onclick="active_console=\''+repo.name+'\';ajax_load(\'content\',\'tpl/console.html\')">Console</button></td>';
                 html += '</tr>';
             }
             $('#repolist').html(html);

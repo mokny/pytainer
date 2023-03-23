@@ -177,6 +177,8 @@ class RepoThread(threading.Thread):
 
     def run(self):
         self.running = True
+        wss.sendAll('APPRUN', self.repo['config']['app']['ident'])
+
         if self.repo['config']['app']['standalone']:
             self.process = subprocess.Popen(['python', '-u', self.repo['launcher']], stdout = subprocess.PIPE)
             while self.running:
@@ -197,6 +199,7 @@ class RepoThread(threading.Thread):
             except Exception as ex:
                 logger.error('Module ' + self.repo['name'] + ' threw error: ' + str(ex))
         self.running = False
+        wss.sendAll('APPSTOP', self.repo['config']['app']['ident'])
 
     def stop(self):
         if self.process:
@@ -208,6 +211,7 @@ class RepoThread(threading.Thread):
             except:
                 pass
         self._stop_event.set()
+        wss.sendAll('APPSTOP', self.repo['config']['app']['ident'])
     
     def stopped(self):
             return self._stop_event.is_set()

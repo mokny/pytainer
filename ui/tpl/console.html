@@ -1,0 +1,21 @@
+<div id="repoconsole"></div>
+<script>
+    $('#repoconsole').html(active_console)
+    var consolecnt = 0;
+
+    function addConsole() {
+        var cnt = 0;
+        for (i in output[active_console]) {
+            cnt++;
+            if (cnt > consolecnt) {
+                $('#repoconsole').append('<div>'+output[active_console][i]+'<div>');
+            }
+        }
+        consolecnt = cnt;
+        setTimeout(() => {
+            addConsole()
+        }, 1000);
+    }
+
+    addConsole()
+</script>

@@ -1,5 +1,7 @@
 var wss = false;
 var sid = false;
+var output = [];
+var active_console = '';
 
 function test() {
     api_request('test')
@@ -10,10 +12,23 @@ function wss_connect(port) {
     wss = new WebSocket('ws://'+url.hostname+':'+port);
 
     wss.onmessage = (event) => {
-        console.log(event.data);
+        data = JSON.parse(event.data);
+        method = data.M;
+        payload = data.D;
+        if (method == 'APPRUN') {
+            $('#apprunning_'+payload).html("True");
+        }
+        if (method == 'APPSTOP') {
+            $('#apprunning_'+payload).html("False");
+        }
+        if (method == 'CONSOLE') {
+            if (!(payload.R in output)) {
+                output[payload.R] = [];
+            }
+            output[payload.R].push(payload.M);
+        }
     };    
     wss.onopen = (event) => {
-        console.log(event.data);
         wss_send("AUTH", sid);
     };    
 }
