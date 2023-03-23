@@ -10,26 +10,31 @@ abspath = str(pathlib.Path(__file__).parent.resolve())
 
 #Custom modules
 sys.path.insert(0, abspath + '/lib')
+
 import logger
-import config
-import db
-import pytainerserver
-import install
-import shellib
-import vars
 import pip
-
-vars.path = abspath
-vars.pid = os.getpid()
-
-logger.setLevel(logger.LEVEL_ERROR)
 
 if not pip.exists('git'):
     logger.out('Installing GITPYTHON...')
     pip.install('gitpython')
     import git
 
+
+import config
+import db
+import pytainerserver
+import install
+import shellib
+import vars
 import repos
+import wss
+
+vars.path = abspath
+vars.pid = os.getpid()
+
+logger.setLevel(logger.LEVEL_ERROR)
+
+
 
 config.load(vars.path + '/config.ini')
 
@@ -70,6 +75,8 @@ logger.out('* pyTainer')
 logger.out('****************************')
 
 
+
+
 if not os.path.isfile(config.getStr('DATABASE','FILENAME',vars.path + '/database.sqlite')):    
     logger.error("Database not found. Make sure your installed pyTainer with the command -i fresh")
     exit()
@@ -105,6 +112,9 @@ print(repos.getJSONList())
 repos.remove('tmp')
 #repos.gitfetch('tmp', 'https://github.com/maxp/metar-decoder')
 logger.info(db.get('SELECT * FROM users'))
+
+wss.init()
+
 pytainerserver.listen(config.getStr('WEBSERVER','HOST','0.0.0.0'), config.getInt('WEBSERVER','PORT',6880))
 
 

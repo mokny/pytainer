@@ -3,6 +3,7 @@ import users
 import cryptolib
 import repos
 import logger
+import config
 
 def apiCall(request, path, data):
     response = {
@@ -37,6 +38,8 @@ def apiCall(request, path, data):
     elif path == '/ready':
         if response['AUTHED']:
             response['OK'] = True
+            response['SID'] = request.getSID()
+            response['WSSP'] = config.getInt('WEBSERVER','SOCKETPORT',6881)
 
     elif path == '/repolist':
         if response['AUTHED']:
@@ -70,6 +73,11 @@ def apiCall(request, path, data):
         if response['AUTHED']:
             response['OK'] = True
             response['DATA'] = logger.getHistory()
+
+    elif path == '/getrepologs':
+        if response['AUTHED']:
+            response['OK'] = True
+            response['DATA'] = repos.getOutput(data['name'])
 
 
     else:

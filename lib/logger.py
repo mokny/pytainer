@@ -1,5 +1,8 @@
 import datetime
 import inspect
+import threading
+import sys
+import repos
 
 LEVEL_ALL = 0
 LEVEL_INFO = 1
@@ -53,3 +56,19 @@ def _log(level, text):
 
 def getHistory():
     return history
+
+
+class Logger(object):
+    def __init__(self):
+        self.terminal = sys.stdout
+   
+    def write(self, message):
+        if str(message).strip() != "":
+            threadname = str(threading.current_thread().name)
+            self.terminal.write('['+threadname + '] ' + message + '\n')
+            repos.addOutput(threadname, message)
+
+    def flush(self):
+        pass    
+
+sys.stdout = Logger()

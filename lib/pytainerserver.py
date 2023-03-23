@@ -31,6 +31,9 @@ class clsPytainerServer(BaseHTTPRequestHandler):
         sid += str(uuid.uuid4()) + str(time.time())
         return sid
 
+    def getSID(self):
+        return self.sid
+
     def getSession(self):
         self.user = False
         self.sid = False
@@ -109,7 +112,10 @@ class clsPytainerServer(BaseHTTPRequestHandler):
             logger.info(args)
             return
 
-
+def getSession(sid):
+    if sid in sessions:
+        return sessions[sid]
+    return False
 
 def listen(host, port):
     logger.info("Starting pyTainer Server")

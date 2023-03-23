@@ -9,6 +9,8 @@
 <script>
         api_request('ready', false, function(response) {
             console.log(response)
+            sid = response.SID;
+            wss_connect(parseInt(response.WSSP));
         }) 
 </script>
 
