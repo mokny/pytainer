@@ -4,7 +4,7 @@ pyTainer is a python based container framework, that lets you manage predefined 
 ## Requirements
 - Python 3.9.x
 
-## Best practice
+## Best use
 Basically you can use one pyTainer to maintain all your programs. But as you can run multiple instances of pyTainer (on different ports), it might be a good idea to run one pyTainer for one project. For example: A pyhton server, a log manager, a notification service and a backup service runs on pyTainer A. Your smart home programs run on pyTainer B.
 
 ## Installation
@@ -38,6 +38,13 @@ This is optional. pyTainer has good default settings that should suit your needs
 [WEBSERVER]
 HOST = 0.0.0.0
 PORT = 6880
+SOCKETPORT = 6881
+
+[IPC]
+PORT = 6882
+
+[LOGGING]
+CONSOLELINES = 120
 
 [REPOS]
 ROOT = /my/path/where/i/wanna/store/programs
@@ -60,3 +67,37 @@ tbd
 
 ## Making a backup
 Making a backup is quiet easy. Just copy the complete pyTainer directory. This will backup everything, including users, programs etc. Note: Some programs may change files outside their repo directory. These changes have to be saved seperately!
+
+# Communicate with other Repos or with pyTainer
+To communicate with other apps or pyTainer, you have to import `pytaineripc`.
+
+If your app is standalone, use this code:
+```
+import pathlib
+sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve()) + '/../../ipc')
+import pytaineripc
+```
+If your app is NOT standalone simply do this:
+```
+import pytaineripc
+```
+
+The IPC Interface is easy to use. Sending data to another app works like this:
+```
+response = pytaineripc.notify('APPIDENT', 'MESSAGE')
+```
+`APPIDENT` is the ident of the other app, `MESSAGE` can be just a string or any object.
+
+To receive this data from another app, use this code:
+
+```
+response = pytaineripc.poll('MYIDENT')
+```
+`MYIDENT` is the ident of the receiving app. Response data comes in an array. Call this function frequently to receive other apps notifications.
+
+You can also start and stop other apps:
+```
+response = pytaineripc.start('OTHERAPPIDENT')
+response = pytaineripc.stop('OTHERAPPIDENT')
+```
+
