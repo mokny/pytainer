@@ -80,6 +80,16 @@ standalone = true             # Set this to false if you want to
 author = "John Doe"
 website = "http://example.com"
 ```
+As you can see above, `my_base_file.py` will be the python file that pyTainer will start.
+
+### standalone = true or false?
+Standalone apps will be launched as subprocess and will not be able to access pyTainers internal variables, or the thread they are running in. This is useful if you don't need these features. Standalone apps should also have the functionality of running without pyTainer. Within your script, you can detect if your app is running inside pyTainer, with the following code:
+```
+if not 'pytainerserver' in sys.modules:
+    print("Not running as pyTainer Module, initializing manually.")
+```
+
+Non-Standalone apps will be launched as module of pyTainer. This has the advantage of quicker communication with other apps, receiving events etc.
 
 ## Running non Python Programs
 tbd
@@ -122,4 +132,8 @@ You can also start and stop other apps:
 response = pytaineripc.start('OTHERAPPIDENT')
 response = pytaineripc.stop('OTHERAPPIDENT')
 ```
-c
+
+There are some more methods available:
+```
+response = pytaineripc.getVersion()
+```
