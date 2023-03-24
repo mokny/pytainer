@@ -57,10 +57,29 @@ FILENAME = mydatabase.sqlite
 In case you did not change settings inside the `config.ini`, simply call `http://<myipaddress>:6880`and login with your username and password.
 
 ## Installing programs on pyTainer
-Basically you can simply create a new directory in the `repos` directory and add the `init.py` as the main executable file. You can also install repositories from git by entering the URL and giving it a name.
+Basically you can simply create a new directory in the `repos` directory. Create a `pytainer.toml` file (see specifications below) and a main executable file. You can also install repositories from git by entering the URL and giving it a name.
 
 ## Creating own pyTainer Programs
 There is an example available [here](https://github.com/mokny/pytainer_example). Basically every simple python script can be a pyTainer program, as long as the main file is called `init.py`.
+
+## How pytainer.toml works
+The pytainer.toml file is the initial file pyTainer looks for. If it does not exist, the app will not be recognized.
+```
+[app]
+ident = "unique_ident"
+name = "My Appname"
+version = "1.0"
+requires = []
+launcher = "my_base_file.py"
+standalone = true             # Set this to false if you want to 
+                              # run your app as pyTainer module,
+                              # e.g. for communicating with other
+                              # non-standalone apps.
+
+[info]
+author = "John Doe"
+website = "http://example.com"
+```
 
 ## Running non Python Programs
 tbd
