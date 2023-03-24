@@ -15,7 +15,7 @@ _notifications = {}
 _key = False
 _clientport = False
 _clientkey = False
-_repos = False
+
 # Get the running pyTainer Version
 def getVersion():
     return do('VERSION')
