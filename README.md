@@ -63,7 +63,7 @@ Basically you can simply create a new directory in the `repos` directory. Create
 There is an example available [here](https://github.com/mokny/pytainer_example). Basically every simple python script can be a pyTainer program, as long as the main file is called `init.py`.
 
 ## How pytainer.toml works
-The pytainer.toml file is the initial file pyTainer looks for. If it does not exist, the app will not be recognized.
+The pytainer.toml file is the initial file pyTainer looks for. It has to be located in the root directory of your app. If it does not exist, the app will not be recognized.
 ```python
 [app]
 ident = "unique_ident"
