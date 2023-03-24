@@ -100,4 +100,4 @@ You can also start and stop other apps:
 response = pytaineripc.start('OTHERAPPIDENT')
 response = pytaineripc.stop('OTHERAPPIDENT')
 ```
-
+c
