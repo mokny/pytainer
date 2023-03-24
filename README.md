@@ -148,4 +148,5 @@ response = pytaineripc.stop('OTHERAPPIDENT')
 There are some more methods available:
 ```python
 response = pytaineripc.getVersion()
+response = pytaineripc.isRunning('OTHERAPPIDENT')
 ```

@@ -40,6 +40,10 @@ def stop(repo):
 def start(repo):
     return do('START', repo)
 
+# Check if a repo is running
+def isRunning(repo):
+    return do('ISRUNNING', repo)
+
 # Raw sending method
 def do(method, payload = False):
     global _clientport
@@ -157,6 +161,10 @@ class _IPCServerClient(threading.Thread):
                     reply['OK'] = True
                     reply['DATA'] = "Stopping " + msg['payload']
                     self.repos.stop(msg['payload'])
+                elif msg['method'] == 'ISRUNNING':
+                    reply['OK'] = True
+                    reply['DATA'] = self.repos.isRunning(msg['payload'])
+                    
                 else:
                     reply['ERR'] = 'Unknown Method'
 
