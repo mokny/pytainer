@@ -1,4 +1,5 @@
 #!/usr/bin/python
+VERSION = '1.1.0'
 
 #Default modules
 import sys
@@ -110,7 +111,8 @@ db.open(config.getStr('DATABASE','FILENAME',vars.path + '/database.sqlite'))
 
 repos.scanFolder()
 wss.init()
-pytaineripc.listen(config.getInt('IPC','PORT',6882))
+pytaineripc._IPCServerSetVersion(VERSION)
+pytaineripc._IPCServerListen(config.getInt('IPC','PORT',6882))
 pytainerserver.listen(config.getStr('WEBSERVER','HOST','0.0.0.0'), config.getInt('WEBSERVER','PORT',6880))
 
 
