@@ -125,7 +125,7 @@ If your app is NOT standalone simply do this:
 import pytaineripc
 ```
 
-## Using IPC
+## Usage
 The IPC Interface is easy to use. Sending data to another app works like this:
 ```python
 response = pytaineripc.notify('APPIDENT', 'MESSAGE')
