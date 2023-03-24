@@ -1,20 +1,23 @@
-<div id="repoconsole"></div>
+<div id="repoconsole" class="console"></div>
 <script>
     $('#repoconsole').html(active_console)
     var consolecnt = 0;
 
     function addConsole() {
-        var cnt = 0;
-        for (i in output[active_console]) {
-            cnt++;
-            if (cnt > consolecnt) {
-                $('#repoconsole').append('<div>'+output[active_console][i]+'<div>');
+        if ( $( "#repoconsole" ).length ) {
+            var cnt = 0;
+            for (i in output[active_console]) {
+                cnt++;
+                if (cnt > consolecnt) {
+                    $('#repoconsole').append('<div>'+output[active_console][i]+'<div>');
+                }
             }
+            $('#repoconsole').scrollTop($('#repoconsole')[0].scrollHeight);
+            consolecnt = cnt;
+            setTimeout(() => {
+                addConsole()
+            }, 100);
         }
-        consolecnt = cnt;
-        setTimeout(() => {
-            addConsole()
-        }, 1000);
     }
 
     addConsole()

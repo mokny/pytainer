@@ -56,4 +56,12 @@ body {
   .defaulttable tr:nth-child(odd) {background-color: #cccccc;}
   .defaulttable tr:nth-child(even) {background-color: #eaeaec;}
   
-  
+  .console {
+    height: 200px;
+    background-color: #1e1e1e;
+    color:#cdf4c4;
+    overflow: scroll;
+    padding:10px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 12px;
+  }

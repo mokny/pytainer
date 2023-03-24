@@ -160,6 +160,8 @@ def isRunning(modulename):
 def addOutput(modulename, message):
     if modulename in threads:
         threads[modulename].output.append(message)
+        if len(threads[modulename].output) > config.getInt('LOGGING','CONSOLELINES', 100):
+            threads[modulename].output.pop(0)
         m = {
             'R': modulename,
             'M': message
@@ -170,7 +172,22 @@ def getOutput(modulename):
     if modulename in threads:
         return threads[modulename].output
     return []
-   
+
+def getAllOutput():
+    ret = {}
+    for modulename in threads:
+        ret[modulename] = getOutput(modulename)
+    return ret
+
+def sendOutput(client):
+    outputs = getAllOutput()
+    for module in outputs:
+        for data in outputs[module]:
+            m = {
+                'R': module,
+                'M': data
+            }
+            wss.send(client,'CONSOLE', m)
 
 class RepoThread(threading.Thread):
     def __init__(self,  *args, **kwargs):
@@ -226,7 +243,9 @@ class RepoThread(threading.Thread):
         else:
             try:
                 self.repo['module'].pytainer_stop(self)
+                logger.info(self.repo['config']['app']['name'] + ' stop requested.')
             except:
+                logger.info(self.repo['config']['app']['name'] + ' does not support stopping. Public function pytainer_stop(foo) missing.')
                 pass
         self._stop_event.set()
         wss.sendAll('APPSTOP', self.repo['config']['app']['ident'])

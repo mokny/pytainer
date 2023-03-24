@@ -3,6 +3,7 @@ import config
 import json
 import pytainerserver
 import logger
+import repos
 
 server = False
 sessions = {}
@@ -34,6 +35,7 @@ def onData(client, data):
                 client.vars['sid'] = payload
                 sessions[payload] = client
                 send(client, 'AUTH', True)
+                repos.sendOutput(client)
             else:
                 client.vars['user'] = False
                 send(client, 'AUTH', False)
@@ -43,6 +45,7 @@ def onData(client, data):
             
     except:
         pass
+
 
 def onDisconnect(client, data):
     if 'sid' in client.vars:

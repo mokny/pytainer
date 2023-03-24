@@ -53,6 +53,8 @@ def _log(level, text):
         outstr = (str(levelstr[level]) + name + ' ' + str(datetime.datetime.now()) + '> ' + str(text))
         print(outstr)
         history.append(outstr)
+        if len(history) > 200:
+            history.pop(0)
 
 def getHistory():
     return history
@@ -65,8 +67,11 @@ class Logger(object):
     def write(self, message):
         if str(message).strip() != "":
             threadname = str(threading.current_thread().name)
-            self.terminal.write('['+threadname + '] ' + message + '\n')
-            repos.addOutput(threadname, message)
+            if threadname == 'MainThread':
+                self.terminal.write(message + '\n')
+            else:
+                self.terminal.write('['+threadname+'] ' + message + '\n')
+                repos.addOutput(threadname, message)
 
     def flush(self):
         pass    

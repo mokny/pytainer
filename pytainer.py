@@ -9,6 +9,7 @@ import pathlib
 abspath = str(pathlib.Path(__file__).parent.resolve())
 
 #Custom modules
+sys.path.insert(0, abspath + '/ipc')
 sys.path.insert(0, abspath + '/lib')
 
 import logger
@@ -28,6 +29,7 @@ import shellib
 import vars
 import repos
 import wss
+import pytaineripc
 
 vars.path = abspath
 vars.pid = os.getpid()
@@ -108,7 +110,7 @@ db.open(config.getStr('DATABASE','FILENAME',vars.path + '/database.sqlite'))
 
 repos.scanFolder()
 wss.init()
-
+pytaineripc.listen(config.getInt('IPC','PORT',6882))
 pytainerserver.listen(config.getStr('WEBSERVER','HOST','0.0.0.0'), config.getInt('WEBSERVER','PORT',6880))
 
 
