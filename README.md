@@ -91,6 +91,18 @@ if not 'pytainerserver' in sys.modules:
 
 Non-Standalone apps will be launched as module of pyTainer. This has the advantage of quicker communication with other apps, receiving events etc.
 
+Non-Standalone apps should implement the following functions:
+```
+def pytainer_init(pyTainerThread):
+    # This gets called when your app was started
+    # 'pyTainerThread' references the underlying thread. See the docs how to use.
+    pass
+
+def pytainer_stop(pyTainerThread):
+    # This gets called when your app was stopped. Here you can do your cleanup, end threads etc...
+    pass
+```
+
 ## Running non Python Programs
 tbd
 
