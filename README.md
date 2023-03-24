@@ -34,7 +34,7 @@ When running pyTainer the first time, the python module `gitpython` will be auto
 
 ## Advanced configuration
 This is optional. pyTainer has good default settings that should suit your needs. But if you want to, edit the file `config.ini` at the main directory.
-```
+```ini
 [WEBSERVER]
 HOST = 0.0.0.0
 PORT = 6880
@@ -64,7 +64,7 @@ There is an example available [here](https://github.com/mokny/pytainer_example).
 
 ## How pytainer.toml works
 The pytainer.toml file is the initial file pyTainer looks for. If it does not exist, the app will not be recognized.
-```
+```python
 [app]
 ident = "unique_ident"
 name = "My Appname"
@@ -92,7 +92,7 @@ if not 'pytainerserver' in sys.modules:
 Non-Standalone apps will be launched as module of pyTainer. This has the advantage of quicker communication with other apps, receiving events etc.
 
 Non-Standalone apps should implement the following global functions in the main file:
-```
+```python
 def pytainer_init(pyTainerThread):
     # This gets called when your app was started
     # 'pyTainerThread' references the underlying thread. See the docs how to use.
@@ -114,38 +114,38 @@ To communicate with other apps or pyTainer, you have to import `pytaineripc`.
 
 ## Import the IPC Module
 If your app is standalone, use this code:
-```
+```python
 import sys
 import pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve()) + '/../../ipc')
 import pytaineripc
 ```
 If your app is NOT standalone simply do this:
-```
+```python
 import pytaineripc
 ```
 
 ## Using IPC
 The IPC Interface is easy to use. Sending data to another app works like this:
-```
+```python
 response = pytaineripc.notify('APPIDENT', 'MESSAGE')
 ```
 `APPIDENT` is the ident of the other app, `MESSAGE` can be just a string or any object.
 
 To receive this data from another app, use this code:
 
-```
+```python
 response = pytaineripc.poll('MYIDENT')
 ```
 `MYIDENT` is the ident of the receiving app. Response data comes in an array. Call this function frequently to receive other apps notifications.
 
 You can also start and stop other apps:
-```
+```python
 response = pytaineripc.start('OTHERAPPIDENT')
 response = pytaineripc.stop('OTHERAPPIDENT')
 ```
 
 There are some more methods available:
-```
+```python
 response = pytaineripc.getVersion()
 ```
