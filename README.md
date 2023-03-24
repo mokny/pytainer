@@ -90,8 +90,10 @@ Making a backup is quiet easy. Just copy the complete pyTainer directory. This w
 # Communicate with other Repos or with pyTainer
 To communicate with other apps or pyTainer, you have to import `pytaineripc`.
 
+## Import the IPC Module
 If your app is standalone, use this code:
 ```
+import sys
 import pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve()) + '/../../ipc')
 import pytaineripc
@@ -101,6 +103,7 @@ If your app is NOT standalone simply do this:
 import pytaineripc
 ```
 
+## Using IPC
 The IPC Interface is easy to use. Sending data to another app works like this:
 ```
 response = pytaineripc.notify('APPIDENT', 'MESSAGE')
