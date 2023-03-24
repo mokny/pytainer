@@ -137,7 +137,7 @@ To receive this data from another app, use this code:
 ```python
 response = pytaineripc.poll('MYIDENT')
 ```
-`MYIDENT` is the ident of the receiving app. Response data comes in an array. Call this function frequently to receive other apps notifications.
+`MYIDENT` is the ident of the receiving app. Response data comes in an array. Call this function frequently to receive other apps notifications. Once polled, performe actions with the data. The next poll will be empty, unless new notifications for your app arrived.
 
 You can also start and stop other apps:
 ```python
