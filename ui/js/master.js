@@ -3,6 +3,7 @@ var sid = false;
 var output = [];
 var active_console = '';
 var _active_repo = '';
+var _performance = [];
 
 function test() {
     api_request('test')
@@ -95,4 +96,22 @@ function ajax_load(id, file) {
 
 function setTitle(text) {
     $('#brand').html('<img src="img/pytainer.png" width="30" height="30" class="d-inline-block align-top" alt="" style="margin-right:10px">' + text)
+}
+
+function performanceRequestData() {
+    api_request('performance',false, function(response) {
+        _performance = response.DATA;
+        displayPerformance();
+    });
+
+    setTimeout(() => {
+        performanceRequestData();
+    }, 5000);
+}
+
+function displayPerformance() {
+    if ($('#perf_cpupercent').length) $('#perf_cpupercent').html(_performance.cpupercent)
+    if ($('#perf_cpuusage').length) $('#perf_cpuusage').html(_performance.cpuusage)
+    if ($('#perf_ramusedpercent').length) $('#perf_ramusedpercent').html(_performance.ramusedpercent)
+    if ($('#perf_ramusedgb').length) $('#perf_ramusedgb').html(Math.round(_performance.ramusedgb * 100) / 100)
 }

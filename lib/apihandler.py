@@ -4,6 +4,8 @@ import cryptolib
 import repos
 import logger
 import config
+import os
+import psutil
 
 def apiCall(request, path, data):
     response = {
@@ -88,6 +90,18 @@ def apiCall(request, path, data):
         if response['AUTHED']:
             response['OK'] = True
             response['DATA'] = repos.getDetails(data['name'])
+
+    elif path == '/performance':
+        if response['AUTHED']:
+            load1, load5, load15 = psutil.getloadavg()
+
+            response['OK'] = True
+            response['DATA'] = {
+                'cpupercent': psutil.cpu_percent(),
+                'cpuusage': (load15/os.cpu_count()) * 100,
+                'ramusedpercent': psutil.virtual_memory()[2],
+                'ramusedgb': psutil.virtual_memory()[3]/1000000000,
+            }
 
 
     else:

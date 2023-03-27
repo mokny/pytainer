@@ -56,7 +56,8 @@
             console.log(response)
             sid = response.SID;
             wss_connect(parseInt(response.WSSP));
-            ajax_load('content','tpl/repos.html');            
+            performanceRequestData();        
+            ajax_load('content','tpl/repos.html');    
         }) 
 
  
