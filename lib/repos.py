@@ -255,7 +255,7 @@ class RepoThread(threading.Thread):
                 logger.info(self.repo['config']['app']['name'] + ' does not support stopping. Public function pytainer_stop(foo) missing.')
                 pass
         self._stop_event.set()
-        wss.sendAll('APPSTOP', self.repo['config']['app']['ident'])
+        #wss.sendAll('APPSTOP', self.repo['config']['app']['ident'])
     
     def stopped(self):
             return self._stop_event.is_set()

@@ -62,6 +62,10 @@ function wss_connect(port) {
     wss.onopen = (event) => {
         wss_send("AUTH", sid);
     };    
+
+    wss.onclose = (event) => {
+        window.location.href = '/'
+    };
 }
 
 function wss_send(method, data) {
