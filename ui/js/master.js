@@ -41,7 +41,13 @@ function wss_connect(port) {
             if (!(payload.R in output)) {
                 output[payload.R] = [];
             }
+
             output[payload.R].push(payload.M);
+
+            if (output[payload.R].length > 200) {
+                output[payload.R].shift();
+            }
+
             if (typeof addCardConsole !== "undefined") { 
                 addCardConsole(payload.R, payload.M);
             }            

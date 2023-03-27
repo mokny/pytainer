@@ -126,9 +126,12 @@
 
         function addDetailedConsole(message) {
             if ( $('#detailsconsole').length ) {
-                $('#detailsconsole').append(message + '<br>')
+                $('#detailsconsole').append('<div class="detailconsoleline">' + message + '</div>')
                 if($("#consoleAutoScroll").is(':checked')) {
                     $('#detailsconsole').scrollTop($('#detailsconsole')[0].scrollHeight);
+                }
+                if ($('.detailconsoleline').length > 200) {
+                    $('#detailsconsole').find('.detailconsoleline:lt(1)').remove();
                 }
             }
         }
