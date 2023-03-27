@@ -112,6 +112,13 @@ def getList():
         ret[repo]['running'] = isRunning(repo)
     return ret
 
+def getDetails(name):
+    if name in repoinfos:
+        ret = repoinfos[name]
+        ret['running'] = isRunning(name)
+        return ret
+    return False
+
 def getJSONList():
     return json.dumps(repoinfos)
 

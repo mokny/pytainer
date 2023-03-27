@@ -84,6 +84,11 @@ def apiCall(request, path, data):
             response['OK'] = True
             response['DATA'] = repos.getOutput(data['name'])
 
+    elif path == '/getrepodetails':
+        if response['AUTHED']:
+            response['OK'] = True
+            response['DATA'] = repos.getDetails(data['name'])
+
 
     else:
         response['ERR'] = 'Unknown Method'

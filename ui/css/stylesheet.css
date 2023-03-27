@@ -1,68 +1,56 @@
 body {
-    width:100%;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size:11px;
-    background-color: #eee;
-    margin: 0px;
-}
-
-#navigation {
-    padding:10px;
-    width:100%;
-    background-color: #000;
-}
-
-#navigation div {
-    cursor: pointer;
-    display:inline-block;
-    color:#fff;
-    margin-right: 10px;
-    height:20px;
-    line-height:20px;
+  background:#353439;
+  color:#eee;
 }
 
 #content {
-    padding:10px;
+  margin-top:70px;  
+  padding:0px 10px 0px 10px;
 }
 
+#pagefooter {
+  font-size: 10px;
+  color:#ccc;
+  text-align: center;
+  padding-top:100px;
+}
 
-.defaulttable {
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 100%;
-  }
-  
-  .defaulttable th, .defaulttable td {
-    text-align: left;
-    padding: 5px;
-    font-size:12px;
-    color:#000;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;  
-    max-width: 100px;
-  }
-  
-  .defaulttable th, .defaulttable thead th  {
-    cursor: pointer;
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    user-select: none; /* Standard syntax */ 
-    background-color: #344459;  
-    font-weight: bold;
-    color:#fff;
-  }
-  
-  .defaulttable tr:nth-child(odd) {background-color: #cccccc;}
-  .defaulttable tr:nth-child(even) {background-color: #eaeaec;}
-  
-  .console {
-    height: 200px;
-    background-color: #1e1e1e;
-    color:#cdf4c4;
-    overflow: scroll;
-    padding:10px;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    font-size: 12px;
-    max-width:100%;    
-  }
+.cardconsole {
+  height:190px;
+  background-color: #242427;
+  color:#0f0;
+  overflow: hidden;
+  font-size:9px;
+  border:10px solid #242427;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.cardconsole::-webkit-scrollbar {
+  display: none;
+}
+
+.cardconsole {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+#detailsconsole {
+  height:400px;
+  background-color: #242427;
+  color:#0f0;
+  overflow: scroll;
+  font-size:13px;
+  border:10px solid #242427;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+#detailscontrol {
+  position: fixed;
+  top:56px;
+  left:0px;
+  width:100%;
+  padding:5px 0px 5px 10px;
+  background-color: #242429;
+  z-index: 1000;
+  box-shadow: 0px 5px 10px -3px #000000;
+}

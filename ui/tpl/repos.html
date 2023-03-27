@@ -1,22 +1,4 @@
-<button onclick="api_request('reloadrepos', false, function(response) {getRepoList()}) ">Reload</button>
-<button onclick="api_request('getlogs', false, function(response) {console.log(response)}) ">Logs</button>
-
-<table class="defaulttable">
-    <thead>
-        <th>Ident</th>
-        <th>Name</th>
-        <th>Version</th>
-        <th>Author</th>
-        <th>Path</th>
-        <th>Running</th>
-        <th>Standalone</th>
-        <th>Start</th>
-        <th>Stop</th>
-        <th>Console</th>
-        <th>Remove</th>
-    </thead>
-    <tbody id="repolist"></tbody>
-</table>
+<div id="repolist" class="card-group"></div>
 
 <script>
         function getRepoList() {
@@ -26,8 +8,8 @@
                 for (reponame in response.DATA) {
                     var repo = response.DATA[reponame];
                     path = repo.path.substring(repo.path.lastIndexOf('/') + 1)
-                    html += '<tr>';
-                        html += '<td>'+repo.config.app.ident+'</td>';
+                    html += '<div class="card" data-bs-theme="dark" style="min-width:300px;margin:0px 5px 5px 0px;">';
+                        /*html += '<td>'+repo.config.app.ident+'</td>';
                         html += '<td>'+repo.config.app.name+'</td>';
                         html += '<td>'+repo.config.app.version+'</td>';
                         html += '<td>'+repo.config.info.author+'</td>';
@@ -37,23 +19,80 @@
                         html += '<td><button onclick="startRepo(\''+repo.name+'\')">Start</button></td>';
                         html += '<td><button onclick="stopRepo(\''+repo.name+'\')">Stop</button></td>';
                         html += '<td><button onclick="active_console=\''+repo.name+'\';ajax_load(\'content\',\'tpl/console.html\')">Console</button></td>';
-                        html += '<td><button onclick="removeRepo(\''+repo.name+'\')">Remove</button></td>';
-                    html += '</tr>';
+                        html += '<td><button onclick="removeRepo(\''+repo.name+'\')">Remove</button></td>';*/
+                            html +='<div class="card-header">'+repo.config.app.name+'</div>';
+                            html +='<div class="card-body">';
+                                //html +='<h5 class="card-title">'+repo.config.app.name+'</h5>';
+                                html +='<p class="card-text">';
+                                    html +='<div id="cardconsole_'+repo.config.app.ident+'" class="cardconsole"></div>';
+                                html +='</p>';
+
+                                html += '<div class="btn-group">';
+                                    html += '<button type="button" class="btn btn-primary" onclick="return repoDetails(\''+repo.name+'\')"><span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" id="apprunning_'+repo.name+'" style="margin-right:8px"></span>Details</button>';   
+                                    html += '<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false"><span class="visually-hidden">Toggle Dropdown</span></button>'                      
+                                    html += '<ul class="dropdown-menu">';
+                                    html += '<li><a class="dropdown-item" href="#" onclick="return startRepo(\''+repo.name+'\')">Start</a></li>';
+                                    html += '<li><a class="dropdown-item" href="#" onclick="return stopRepo(\''+repo.name+'\')">Stop</a></li>';
+                                    html += '<li><a class="dropdown-item" href="#" onclick="return removeRepo(\''+repo.name+'\')">Remove</a></li>';
+                                    html += '</ul>';
+                                html += '</div>';
+                            html += '</div>';
+                            //html +='<div class="card-footer" id="apprunning_'+repo.config.app.ident+'">'+repo.running+'</div>';
+                    html += '</div>';
                 }
                 $('#repolist').html(html);
+
+                for (repo in response.DATA) {
+                    initCardConsole(repo)
+                    setRunning(repo, response.DATA[repo].running)
+                }
+
             }) 
         }
 
         function startRepo(name) {
-            api_request('execrepo', {'name': name}, function(response) {console.log(response)}) 
+            api_request('execrepo', {'name': name}, function(response) {console.log(response)});
+            return false;
         }
 
         function stopRepo(name) {
-            api_request('stoprepo', {'name': name}, function(response) {console.log(response)}) 
+            api_request('stoprepo', {'name': name}, function(response) {console.log(response)});
+            return false;
         }
 
         function removeRepo(name) {
-            api_request('removerepo', {'name': name}, function(response) {getRepoList()}) 
+            api_request('removerepo', {'name': name}, function(response) {getRepoList()});
+            return false;
+        }
+        
+        function repoDetails(name) {
+            _active_repo = name;
+            ajax_load('content','tpl/details.html')
+            return false;
+        }
+
+        function initCardConsole(repo) {
+            for (i in output[repo]) {
+                addCardConsole(repo, output[repo][i])
+            }
+        }
+
+
+        function addCardConsole(repo, message) {
+            if ( $('#cardconsole_'+repo).length ) {
+                $('#cardconsole_'+repo).append(message + '<br>')
+                $('#cardconsole_'+repo).scrollTop($('#cardconsole_'+repo)[0].scrollHeight);
+            }
+        }
+
+        function setRunning(repo, status) {
+            if ( $('#apprunning_'+repo).length ) {
+                if (status) {
+                    $('#apprunning_'+repo).show();
+                } else {
+                    $('#apprunning_'+repo).hide();
+                }
+            }
         }
 
         getRepoList();
