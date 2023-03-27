@@ -87,3 +87,6 @@ function ajax_load(id, file) {
     return false;
 }
 
+function setTitle(text) {
+    $('#brand').html('<img src="img/pytainer.png" width="30" height="30" class="d-inline-block align-top" alt="" style="margin-right:10px">' + text)
+}

@@ -86,6 +86,8 @@ class clsPytainerServer(BaseHTTPRequestHandler):
         self.send_response(200)
         if path.endswith('.css'):
             self.send_header("Content-type", "text/css")
+        elif path.endswith('.png'):
+            self.send_header("Content-type", "image/png")    
         else:
             self.send_header("Content-type", "text/html")
         for morsel in self.cookie.values():
@@ -102,12 +104,16 @@ class clsPytainerServer(BaseHTTPRequestHandler):
 
     def serveFile(self, path):
         if os.path.isfile(vars.path + '/ui' + path):
-
-            file = open(vars.path + '/ui' + path, "r")
-            data = file.read()
-            file.close()            
-
-            self.wfile.write(bytes(data, "utf-8"))
+            if path.endswith('.png'):
+                with open(vars.path + '/ui' + path, 'rb') as file_handle:
+                    data = file_handle.read()    
+                self.wfile.write(data)            
+            else:
+                file = open(vars.path + '/ui' + path, "r")
+                data = file.read()
+                file.close()            
+                self.wfile.write(bytes(data, "utf-8"))
+            
         else:
             self.wfile.write(bytes('oops', "utf-8"))
 

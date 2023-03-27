@@ -116,6 +116,7 @@
                 $('#repo_path').html(repo.path)
                 $('#repo_standalone').html(app.standalone ? 'Yes' : 'No')
                 setDetailsRunning(repo.running)
+                setTitle('[APP] ' + app.name);
             }) 
 
             for (i in output[_active_repo]) {
