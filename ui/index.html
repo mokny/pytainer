@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,22 +11,46 @@
   </head>
   <body>
     <div id="body">
-      <h1>Hello, world!</h1>
-      <input type="text" id="username" ><br><br>
-      <input type="password" id="password" ><br><br>
-      <button onclick="auth()">te</button>
-      <button onclick="location.reload(true)">Nocache</button>
+      <div style="padding:50px">
 
-      <script>
-        function auth() {
-            api_request('auth', {'username': $('#username').val(), 'password': $('#password').val()}, function(response) {
-                console.log(response)
-                if (response['OK']) {
-                    ajax_load('body', 'tpl/framework.html')
-                }
-            }) 
-        }
-      </script>
+        <div class="card" style="max-width: 500px;margin: 0 auto;float: none; margin-top:30px;">
+          <div class="card-header">pyTainer Login</div>
+          <div class="card-body">
+  
+            <form>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Username</label>
+                <input type="email" class="form-control" id="username" aria-describedby="emailHelp">
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password">
+              </div>
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+              </div>
+              <button class="btn btn-primary" onclick="auth()">Login</button>
+              <button class="btn btn-danger" onclick="location.reload(true)">Nocache</button>
+  
+            </form>
+  
+      
+          </div>
+        </div>
+  
+        <script>
+          function auth() {
+              api_request('auth', {'username': $('#username').val(), 'password': $('#password').val()}, function(response) {
+                  console.log(response)
+                  if (response['OK']) {
+                      ajax_load('body', 'tpl/framework.html')
+                  }
+              }) 
+          }
+        </script>
+      </div>
+
   
     </div>
     <script src="bootstrap/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
