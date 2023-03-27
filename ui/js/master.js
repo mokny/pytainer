@@ -78,7 +78,12 @@ function api_request(method, payload = false, callback = false) {
     $.post( '/' + method, payload)
         .done(function( data ) {
             if (callback) {
-                callback(JSON.parse(data));
+                js = JSON.parse(data)
+                if (!js.AUTHED) {
+                    window.location.href = '/'
+                    return;
+                }
+                callback(js);
             } else {
                 alert(data)
             }
