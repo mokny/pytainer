@@ -76,7 +76,7 @@
         </div>
     </div>
 </div>
-
+<a name="detailedconsole"></a>
 <div class="card text-bg-dark mb-3">
     <div class="card-header">Console</div>
     <div class="card-body">
@@ -252,6 +252,7 @@
         function startDetailsRepo() {
             var template = $('#detailsconfigselect').val();
             api_request('execrepo', {'name': _active_repo, 'template': template}, function(response) {console.log(response)});
+            scrollToAnchor('detailedconsole');
             return false;
         }
 

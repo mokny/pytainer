@@ -124,3 +124,8 @@ function displayPerformance() {
     if ($('#perf_ramusedpercent').length) $('#perf_ramusedpercent').html(_performance.ramusedpercent)
     if ($('#perf_ramusedgb').length) $('#perf_ramusedgb').html(Math.round(_performance.ramusedgb * 100) / 100)
 }
+
+function scrollToAnchor(aid){
+    var aTag = $("a[name='"+ aid +"']");
+    $('html,body').animate({scrollTop: aTag.offset().top-70},'slow');
+}
