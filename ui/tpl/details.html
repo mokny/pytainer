@@ -54,7 +54,7 @@
     </div>
 </div>
 
-<div class="card text-bg-dark mb-3">
+<div class="card text-bg-dark mb-3" id="configpanel">
     <div class="card-header">
         Configuration
         <div class="form-text">Select a configuration template</div>
@@ -132,7 +132,7 @@
                 console.log(response)
                 $('#detailsconfig').html('');
                 $('#detailsconfigselect').html('');
-                $('#detailsconsole').html('');
+                //$('#detailsconsole').html('');
                 $('#apptemplate').val('');
 
                 var repo = response.DATA;
@@ -149,7 +149,6 @@
                 $('#repo_launcher').html(app.launcher)
                 $('#repo_path').html(repo.path)
                 $('#repo_standalone').html(app.standalone ? 'Yes' : 'No')
-                setDetailsRunning(repo.running)
                 setTitle('[APP] ' + app.name);
 
                 var config = [];
@@ -213,8 +212,10 @@
                     autoloadconfig = false;
                 } else {
                     detailsSelectConfig(document.getElementById("detailsconfigselect"));
-
                 }
+
+                setDetailsRunning(repo.running)
+
             }) 
 
 
@@ -245,6 +246,7 @@
                 $('#details_btn_stop').hide();
                 $('#details_btn_start').show();
             }
+            setConfigPanelDisabled(!status);
         }
 
         function startDetailsRepo() {
@@ -318,6 +320,34 @@
             }
         }
 
+        function setConfigPanelDisabled(val) {
+            if (val) {
+                $("#configpanel").removeClass("disabledpanel");
+                $("#configpanel").find(':input').each(function () {
+                    $(this).attr('disabled', false);
+                });                
+                $("#configpanel").find('input').each(function () {
+                    $(this).attr('disabled', false);
+                });                
+                $("#configpanel").find('select').each(function () {
+                    $(this).attr('disabled', false);
+                });                
+            } else {
+                $("#configpanel").addClass("disabledpanel");
+                $("#configpanel").find(':input').each(function () {
+                    $(this).attr('disabled', 'disabled');
+                });                
+                $("#configpanel").find('input').each(function () {
+                    $(this).attr('disabled', 'disabled');
+                });                
+                $("#configpanel").find('select').each(function () {
+                    $(this).attr('disabled', 'disabled');
+                });                
+            }
+
+        }
+
+    
         getRepoDetails();
 
 </script>
