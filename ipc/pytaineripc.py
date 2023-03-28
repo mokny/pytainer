@@ -7,6 +7,7 @@ import pathlib
 import os
 import copy
 import sys
+import json
 
 _version = "0"
 _ipc = False
@@ -19,6 +20,14 @@ _clientkey = False
 # Get the running pyTainer Version
 def getVersion():
     return do('VERSION')
+
+# Get config
+def getConfig(repo):
+    try:
+        with open(_abspath+'/../tmp/'+repo+'_config.json', 'r') as file:
+            return json.loads(file.read())
+    except:
+        return {}
 
 # Notify other Repos with data. Data can be any object
 def notify(repo, data):
@@ -156,7 +165,7 @@ class _IPCServerClient(threading.Thread):
                 elif msg['method'] == 'START':
                     reply['OK'] = True
                     reply['DATA'] = "Starting " + msg['payload']
-                    self.repos.exec(msg['payload'])
+                    self.repos.exec(msg['payload'], '')
                 elif msg['method'] == 'STOP':
                     reply['OK'] = True
                     reply['DATA'] = "Stopping " + msg['payload']

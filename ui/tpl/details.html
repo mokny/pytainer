@@ -55,6 +55,29 @@
 </div>
 
 <div class="card text-bg-dark mb-3">
+    <div class="card-header">
+        Configuration
+        <div class="form-text">Select a configuration template</div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Config-Template</span>
+            <select class="form-select" aria-label="Default select example" id="detailsconfigselect" onchange="detailsSelectConfig(this)">
+            </select>
+        </div>   
+    </div>
+
+    <div class="card-body" id="detailsconfig"></div>
+
+    <div class="card-footer" style="font-size: 12px;">
+        <div class="form-text">Specify a template name for your custom configuration</div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="New Template Name" aria-label="Template Name" aria-describedby="button-addon2" id="apptemplate">
+            <button class="btn btn-warning" type="button" onclick="detailsSaveConfig()">Save</button>
+            <button class="btn btn-danger" type="button" onclick="detailsDeleteConfig()">Delete</button>
+        </div>
+    </div>
+</div>
+
+<div class="card text-bg-dark mb-3">
     <div class="card-header">Console</div>
     <div class="card-body">
         <div id="detailsconsole"></div>
@@ -98,14 +121,25 @@
 
 
 
+
 <script>
+        var customconfigs = [];
+        var defaultconfig = [];
+        var autoloadconfig = false;
+
         function getRepoDetails() {
             api_request('getrepodetails', {'name': _active_repo}, function(response) {
                 console.log(response)
+                $('#detailsconfig').html('');
+                $('#detailsconfigselect').html('');
+                $('#detailsconsole').html('');
+                $('#apptemplate').val('');
+
                 var repo = response.DATA;
                 var app = response.DATA.config.app;
                 var info = response.DATA.config.info;
-                repo_headline
+                customconfigs = response.DATA.customconfigs;
+
                 $('#repo_headline').html(app.name)
                 $('#repo_ident').html(app.ident)
                 $('#repo_name').html(app.name)
@@ -117,11 +151,78 @@
                 $('#repo_standalone').html(app.standalone ? 'Yes' : 'No')
                 setDetailsRunning(repo.running)
                 setTitle('[APP] ' + app.name);
+
+                var config = [];
+                if (response.DATA.config.hasOwnProperty('config')) {
+                    config = response.DATA.config.config;
+                    defaultconfig = config;
+                }
+                
+                for (field in config) {
+                    var html = '';
+                    var fieldtype = 'text';
+                    var step = false
+                    var pattern = ''
+                    if (config[field].type == 'string') fieldtype = 'text';
+                    if (config[field].type == 'int') {
+                        fieldtype = 'number';
+                        pattern = ' inputmode="decimal"'
+                        step = 1
+                    }
+                    if (config[field].type == 'float') {
+                        fieldtype = 'number';
+                        pattern = ' pattern="[0-9]+([\.][0-9]{1,2})?" inputmode="decimal"';
+                        step = 0.1
+                    }
+
+                    html += '<div class="mb-3">';
+                    html += '<div class="input-group">';
+                    html += '<span class="input-group-text">'+config[field].title+'</span>';
+                    html += '<input id="appconfig_'+field+'" type="'+fieldtype+'" name="'+field+'" class="form-control" aria-label="'+config[field].description+'" '+ (step ? 'step="'+step+'" ' : '') + pattern +' lang="en_US" value="'+config[field].value+'">';
+                    html += '</div>';
+                    html += '<div class="form-text">'+config[field].description+'</div>';
+                    html += '</div>';
+                    html += '';
+                    html += '';
+                    html += '';
+                    html += '';
+                    html += '';
+                    $('#detailsconfig').append(html)
+                }
+
+                
+                html = '';
+                var customconfigsavail = false;
+                for (i in customconfigs) {
+                    customconfigsavail = true;
+                    if (autoloadconfig) {
+                        var sel = '';
+                        if (autoloadconfig == i) sel = 'selected';
+                        html +='<option value="'+i+'" '+sel+'>'+i+'</option>';
+                    } else {
+                        var sel = '';
+                        if (repo.activeconfig == i) sel = 'selected'
+                        html +='<option value="'+i+'" '+sel+'>'+i+'</option>';
+                    }
+                }
+                if (!customconfigsavail) html = '<option value="">App Default Configuration</option>' + html;
+                $('#detailsconfigselect').html(html)
+
+                if (autoloadconfig) {
+                    detailsSelectConfig(document.getElementById("detailsconfigselect"));
+                    autoloadconfig = false;
+                } else {
+                    detailsSelectConfig(document.getElementById("detailsconfigselect"));
+
+                }
             }) 
+
+
 
             for (i in output[_active_repo]) {
                 addDetailedConsole(output[_active_repo][i])
             }
+
         }
 
         function addDetailedConsole(message) {
@@ -147,7 +248,8 @@
         }
 
         function startDetailsRepo() {
-            api_request('execrepo', {'name': _active_repo}, function(response) {console.log(response)});
+            var template = $('#detailsconfigselect').val();
+            api_request('execrepo', {'name': _active_repo, 'template': template}, function(response) {console.log(response)});
             return false;
         }
 
@@ -159,6 +261,61 @@
         function clearDetailsConsole() {
             output[_active_repo] = [];
             $('#detailsconsole').html('');
+        }
+
+        function detailsSaveConfig() {
+            if ($('#apptemplate').val().trim() == '') {
+                alert('You must enter a template name')
+                return;
+            }
+            var raa = {};
+            $('#detailsconfig *').filter('input').each(function() {
+                var k = $(this).attr("name")
+                var v = $(this).val();
+                raa[k] = v;
+            });
+            api_request('saverepoconfig', {'name': _active_repo, 'template': $('#apptemplate').val(), 'config': JSON.stringify(raa)}, function(response) {
+                autoloadconfig = $('#apptemplate').val();
+                getRepoDetails();
+            })
+        }
+
+        function detailsDeleteConfig() {
+            if ($('#apptemplate').val().trim() == '') {
+                alert('You must enter a template name')
+                return;
+            }
+            api_request('deleterepoconfig', {'name': _active_repo, 'template': $('#apptemplate').val()}, function(response) {
+                autoloadconfig=false;
+                getRepoDetails();
+            })
+        }
+
+        function detailsSelectConfig(sel) {
+            var selectedcfg = sel.value;
+
+            if (selectedcfg == '') {
+                autoloadconfig = false;
+                $('#apptemplate').val('');
+
+                $('#detailsconfig *').filter('input').each(function() {
+                    if ($(this).attr("name") in defaultconfig) {
+                        $('#appconfig_' + $(this).attr("name")).val(defaultconfig[$(this).attr("name")].value)
+                    }
+                });
+
+            } else {
+                autoloadconfig = selectedcfg
+                $('#apptemplate').val(selectedcfg);
+
+                $('#detailsconfig *').filter('input').each(function() {
+                    if ($(this).attr("name") in customconfigs[selectedcfg]) {
+                        if ($(this).attr("name") in customconfigs[selectedcfg]) {
+                            $('#appconfig_' + $(this).attr("name")).val(customconfigs[selectedcfg][$(this).attr("name")])
+                        }
+                    }
+                });
+            }
         }
 
         getRepoDetails();

@@ -79,8 +79,26 @@ standalone = true             # Set this to false if you want to
 [info]
 author = "John Doe"
 website = "http://example.com"
+
+[config.myVariable1]
+title = "My Variable 1"
+description = "Enter a string value here"
+type = "string"
+value = "lala"
+
+[config.myVariable2]
+title = "My Variable 2"
+description = "Enter an integer value here"
+type = "int"
+value = 123
+
+[config.myVariable3]
+title = "My Variable 3"
+description = "Enter a float value here"
+type = "float"
+value = 123.456
 ```
-As you can see above, `my_base_file.py` will be the python file that pyTainer will start.
+As you can see above, `my_base_file.py` will be the python file that pyTainer will start. The `config.XXXXXX` sections define configuration variables that are passed to the app. These variables can be directly edited at the user interface!
 
 ### standalone = true or false?
 Standalone apps will be launched as subprocess and will not be able to access pyTainers internal variables, or the thread they are running in. This is useful if you don't need these features. Standalone apps should also have the functionality of running without pyTainer. Within your script, you can detect if your app is running inside pyTainer, with the following code:
@@ -93,12 +111,12 @@ Non-Standalone apps will be launched as module of pyTainer. This has the advanta
 
 Non-Standalone apps should implement the following global functions in the main file:
 ```python
-def pytainer_init(pyTainerThread):
+def pytainer_init(app):
     # This gets called when your app was started
-    # 'pyTainerThread' references the underlying thread. See the docs how to use.
+    # 'app' references the underlying thread. See the docs how to use.
     pass
 
-def pytainer_stop(pyTainerThread):
+def pytainer_stop(app):
     # This gets called when your app was stopped. Here you can do your cleanup, end threads etc...
     pass
 ```

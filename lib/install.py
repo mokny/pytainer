@@ -23,17 +23,35 @@ def fresh():
     logger.out("Starting fresh installation of pyTainer")
     logger.out(vars.path)
 
-    removeDirectories()
-    createDirectories()
+    #removeDirectories()
+    #createDirectories()
 
     logger.out("Fresh Database Installation...")
     db.clear()
+
     db.ex('''
         CREATE TABLE users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username VARCHAR(99) NOT NULL UNIQUE,
             password VARCHAR(99) NOT NULL,
             permissions INT(11) NOT NULL DEFAULT '0'
+        );
+    ''')
+
+    db.ex('''
+        CREATE TABLE repoconfig (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ident VARCHAR(99) NOT NULL,
+            template VARCHAR(99) NOT NULL,
+            config LONGTEXT
+        );
+    ''')
+
+    db.ex('''
+        CREATE TABLE lastusedconfigs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ident VARCHAR(99) NOT NULL UNIQUE,
+            template VARCHAR(99) NOT NULL
         );
     ''')
 

@@ -51,7 +51,10 @@ def apiCall(request, path, data):
     elif path == '/execrepo':
         if response['AUTHED']:
             response['OK'] = True
-            response['DATA'] = repos.exec(data['name'])
+            template = ''
+            if 'template' in data:
+                template = data['template']
+            response['DATA'] = repos.exec(data['name'], template)
 
     elif path == '/stoprepo':
         if response['AUTHED']:
@@ -102,6 +105,19 @@ def apiCall(request, path, data):
                 'ramusedpercent': psutil.virtual_memory()[2],
                 'ramusedgb': psutil.virtual_memory()[3]/1000000000,
             }
+
+    elif path == '/saverepoconfig':
+        if response['AUTHED']:
+            response['OK'] = True
+            cfg = json.loads(data['config'])
+            repos.setConfig(data['name'], data['template'], cfg)
+
+    elif path == '/deleterepoconfig':
+        if response['AUTHED']:
+            response['OK'] = True
+            repos.deleteConfig(data['name'], data['template'])
+
+
 
 
     else:

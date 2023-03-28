@@ -74,11 +74,20 @@ def scanFolder():
                 sys.modules[modulename] = repos[modulename]['module']
 
 
-def exec(modulename):
+def exec(modulename, template):
     if not isRunning(modulename):
         if modulename in repos:
+            setActiveConfig(modulename, template)
             threads[modulename] = RepoThread()
             threads[modulename].setRepo(repos[modulename])
+
+            customconfig = copy.copy(getActiveConfig(modulename))
+
+            if customconfig:
+                for key in threads[modulename].config:
+                    if key in customconfig:
+                        threads[modulename].config[key] = customconfig[key]
+
             threads[modulename].start()
             return True
         else:
@@ -116,8 +125,76 @@ def getDetails(name):
     if name in repoinfos:
         ret = repoinfos[name]
         ret['running'] = isRunning(name)
+        ret['customconfigs'] = loadConfigs(name)
+        ret['activeconfig'] = getActiveConfigTemplateName(name)
         return ret
     return False
+
+def loadConfigs(name):
+    ret = {}
+    if name in repoinfos:
+        details = repoinfos[name]
+        if 'config' in details['config']:
+            defaults = details['config']['config']
+            data = db.get('SELECT * FROM repoconfig WHERE ident="' + name + '"')
+            for row in data:
+                custom = json.loads(db.unesc(row['config']))
+                print(custom)
+                for key in  copy.copy(custom):
+                    if defaults[key]['type'] == 'int':
+                        if key in custom:
+                            custom[key] = int(custom[key])
+                    if defaults[key]['type'] == 'string':
+                        if key in custom:
+                            custom[key] = str(custom[key])
+                    if defaults[key]['type'] == 'float':
+                        if key in custom:
+                            custom[key] = float(custom[key].replace(',','.'))
+
+                    ret[row['template']] = custom
+    return ret
+
+def setConfig(name, template, config):
+    db.ex('DELETE FROM repoconfig WHERE ident="'+name+'" AND template="'+template+'"')
+    insert = {
+        'ident': name,
+        'template': template,
+        'config': json.dumps(config),
+    }
+    id = db.insert('repoconfig', insert)
+    
+    setActiveConfig(name, template)
+    
+
+def setActiveConfig(name, template):
+    if not template == '':
+        db.ex('DELETE FROM lastusedconfigs WHERE ident="'+name+'"')
+        insert = {
+            'ident': name,
+            'template': template,
+        }
+        id = db.insert('lastusedconfigs', insert)
+
+def deleteConfig(name, template):
+    db.ex('DELETE FROM repoconfig WHERE ident="'+name+'" AND template="'+template+'"')
+
+def getActiveConfig(name):
+    s = db.get('SELECT * FROM lastusedconfigs WHERE ident="'+name+'"')
+    if len(s) > 0:
+        configs = loadConfigs(name)
+        lastusedtemplate = s[0]['template']
+        if lastusedtemplate in configs:
+            return configs[lastusedtemplate]
+    else:
+        return False
+    return False
+
+def getActiveConfigTemplateName(name):
+    s = db.get('SELECT * FROM lastusedconfigs WHERE ident="'+name+'"')
+    if len(s) > 0:
+        return s[0]['template']
+    else:
+        return ''
 
 def getJSONList():
     return json.dumps(repoinfos)
@@ -207,17 +284,25 @@ class RepoThread(threading.Thread):
         self.process = False
         self.stdout = False
         self.stdin = False
+        self.config = {}
         self.output = []
 
     def setRepo(self,repo):
         self.repo = repo
+        if 'config' in self.repo['config']:
+            for key in self.repo['config']['config']:
+                if 'value' in self.repo['config']['config'][key]:
+                    self.config[key] = self.repo['config']['config'][key]['value']
         self.setName(self.repo['config']['app']['ident'])
-
 
     def getOutput(self):
         return self.output
 
     def run(self):
+
+        with open(vars.path+'/tmp/'+self.repo['config']['app']['ident']+'_config.json', 'w', encoding='utf-8') as f:
+            f.write(json.dumps(self.config))    
+
         self.running = True
         wss.sendAll('APPRUN', self.repo['config']['app']['ident'])
 
@@ -236,7 +321,8 @@ class RepoThread(threading.Thread):
                 try:
                     self.repo['module'].pytainer_init(self)
                     pass
-                except:
+                except Exception as ex:
+                    print(ex)
                     pass
             except Exception as ex:
                 logger.error('Module ' + self.repo['name'] + ' threw error: ' + str(ex))

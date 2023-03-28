@@ -7,7 +7,7 @@ con = False
 
 def open(filename):
     global con
-    con = sqlite3.connect(filename)
+    con = sqlite3.connect(filename, check_same_thread=False)
     con.row_factory = dict_factory
 
 def clear():

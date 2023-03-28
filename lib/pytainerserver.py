@@ -18,7 +18,7 @@ class clsPytainerServer(BaseHTTPRequestHandler):
     cookie = SimpleCookie()
 
     def do_GET(self):
-        logger.info("New connection")
+        #logger.info("New connection")
         self.handleRequest('GET', self.path, False)
 
     def do_POST(self):
@@ -54,8 +54,8 @@ class clsPytainerServer(BaseHTTPRequestHandler):
             self.user = sessions[self.sid]
         else:
             self.user = sessions[self.sid]
-        logger.info("SID: " + self.sid)
-        logger.info("USER: " + str(self.user))
+        #logger.info("SID: " + self.sid)
+        #logger.info("USER: " + str(self.user))
 
 
     def sessionWrite(self, key, value):
@@ -73,8 +73,8 @@ class clsPytainerServer(BaseHTTPRequestHandler):
         if path == '/':
             path = '/index.html'
 
-        logger.info(path)
-        logger.info('...')
+        #logger.info(path)
+        #logger.info('...')
         if payload:
             payloaddata = urllib.parse.parse_qs(payload)
             payload = {}
@@ -118,7 +118,7 @@ class clsPytainerServer(BaseHTTPRequestHandler):
             self.wfile.write(bytes('oops', "utf-8"))
 
     def log_message(self, format, *args):
-            logger.info(args)
+            #logger.info(args)
             return
 
 def getSession(sid):
