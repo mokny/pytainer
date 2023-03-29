@@ -59,8 +59,10 @@ In case you did not change settings inside the `config.ini`, simply call `http:/
 ## Installing programs on pyTainer
 Basically you can simply create a new directory in the `repos` directory. Create a `pytainer.toml` file (see specifications below) and a main executable file. You can also install repositories from git by entering the URL and giving it a name.
 
-## Creating own pyTainer Programs
-There is an example available [here](https://github.com/mokny/pytainer_example). Basically every simple python script can be a pyTainer program, as long as the main file is called `init.py`.
+## Creating own pyTainer Programs from scratch
+Getting started is quiet easy. Open the pyTainer Webpanel and navigate to `Install` -> `Create`. Now enter a uniqe ident, a title for your app and your name and click create. pyTainer will now create the `pytainer.toml` file and the `init.py` inside a dedicated project directory under `pytainer/repos`. More infos below.
+
+There is also an example available [here](https://github.com/mokny/pytainer_example). Basically every simple python script can be a pyTainer program, as long as a valid `pytainer.toml` file exists.
 
 ## How pytainer.toml works
 The pytainer.toml file is the initial file pyTainer looks for. It has to be located in the root directory of your app. If it does not exist, the app will not be recognized.
