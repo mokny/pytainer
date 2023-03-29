@@ -169,19 +169,33 @@ def apiCall(request, path, data):
             with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/pytainer.toml', 'w', encoding='utf-8') as f:
                 new_toml_string = tomlreader.dump(tomldata, f)
 
-            with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py', 'w', encoding='utf-8') as f:
-                #!/usr/bin/python
-                f.write('#!/usr/bin/python\n\n')   
-                f.write('# Required imports for pyTainer\n')   
-                f.write('import sys\n')   
-                f.write('import pathlib\n')
-                f.write('sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve()) + \'/../../ipc\')\n')   
-                f.write('import pytaineripc\n\n')   
-                f.write('# Your code here\n')   
-                f.write('config = pytaineripc.getConfig(\''+data['ident']+'\')\n\n')   
-                f.write('print("pyTainer Default Standalone Template")\n')   
-                
-
+            if data['standalone']:
+                with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py', 'w', encoding='utf-8') as f:
+                    #!/usr/bin/python
+                    f.write('#!/usr/bin/python\n\n')   
+                    f.write('# Required imports for pyTainer\n')   
+                    f.write('import sys\n')   
+                    f.write('import pathlib\n')
+                    f.write('sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve()) + \'/../../ipc\')\n')   
+                    f.write('import pytaineripc\n\n')   
+                    f.write('# Your code here\n')   
+                    f.write('config = pytaineripc.getConfig(\''+data['ident']+'\')\n\n')   
+                    f.write('print("pyTainer Default Standalone Template. Edit '+config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py' + ' to code your own app.")\n')   
+            else:                
+                with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py', 'w', encoding='utf-8') as f:
+                    #!/usr/bin/python
+                    f.write('import sys\n')   
+                    f.write('import pathlib\n')
+                    f.write('import pytaineripc\n\n')   
+                    f.write('# Your code here\n')   
+                    f.write('def pytainer_init(app):\n')   
+                    f.write('   config = app.config\n')   
+                    f.write('   print("App initialized!")\n')   
+                    f.write('   pass\n\n')   
+                    f.write('def pytainer_stop(app):\n')   
+                    f.write('   pass\n\n')   
+                    f.write('print("pyTainer Default Module Template. Edit '+config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py' + ' to code your own app.")\n')   
+            repos.scanFolder()
 
 
 
