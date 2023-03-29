@@ -42,6 +42,8 @@ import repos
 import wss
 import pytaineripc
 
+vars.pytainerversion = str(VERSION)
+
 vars.path = abspath
 vars.pid = os.getpid()
 

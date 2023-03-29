@@ -28,6 +28,7 @@ repos = {}
 repoinfos = {}
 threads = {}
 
+
 def readManifest(path):
     return tomlreader.load(path)
 
@@ -307,6 +308,11 @@ class RepoThread(threading.Thread):
         return self.output
 
     def run(self):
+        #check pytainer version
+        if vars.versionCompare(vars.pytainerversion, self.repo['config']['requirements']['pytainerversion']) < 0:
+            logger.error(self.repo['config']['app']['name'] + ' requires pyTainer Version ' + self.repo['config']['requirements']['pytainerversion'] + ' - Exiting.')
+            return
+
         #install modules if neccessary
         for mod in self.repo['config']['requirements']['modules']:
             if not pip.exists(mod):
@@ -319,28 +325,45 @@ class RepoThread(threading.Thread):
         self.running = True
         wss.sendAll('APPRUN', self.repo['config']['app']['ident'])
 
-        if self.repo['config']['app']['standalone']:
-            self.process = subprocess.Popen(['python', '-u', self.repo['launcher']], stdout = subprocess.PIPE)
-            while self.running:
-                line = self.process.stdout.readline().rstrip().decode("UTF-8")
-                if not line:
-                    break
-                print(line)
-            logger.info(self.repo['config']['app']['name'] + ' ended.')
-        else:
-            try:
-                logger.info('Executing Repo ' + self.repo['name'])
-                self.repo['spec'].loader.exec_module(self.repo['module'])
+        try:
+            if self.repo['config']['app']['standalone']:
+                cmdparams = []
+                if self.repo['config']['app']['language'].strip() != '':
+                    cmdparams.append(self.repo['config']['app']['language'].strip())
+                    if self.repo['config']['app']['language'].strip().startswith('python'):
+                        cmdparams.append('-u')
+
+                cmdparams.append(self.repo['launcher'].strip())
+                
+                if self.repo['config']['app']['args'].strip() != '':
+                    cmdparams.append(self.repo['config']['app']['args'].strip())
+
+                #self.process = subprocess.Popen(['python', '-u', self.repo['launcher']], stdout = subprocess.PIPE)
+                self.process = subprocess.Popen(cmdparams, stdout = subprocess.PIPE)
+                while self.running:
+                    line = self.process.stdout.readline().rstrip().decode("UTF-8")
+                    if not line:
+                        break
+                    print(line)
+                logger.info(self.repo['config']['app']['name'] + ' ended.')
+            else:
                 try:
-                    self.repo['module'].pytainer_init(self)
-                    pass
+                    logger.info('Executing Repo ' + self.repo['name'])
+                    self.repo['spec'].loader.exec_module(self.repo['module'])
+                    try:
+                        self.repo['module'].pytainer_init(self)
+                        pass
+                    except Exception as ex:
+                        print(ex)
+                        pass
                 except Exception as ex:
-                    print(ex)
-                    pass
-            except Exception as ex:
-                err = traceback.format_exc()
-                logger.error('Module ' + self.repo['name'] + ' threw error: ' + str(ex))
-                logger.error(str(err))
+                    err = traceback.format_exc()
+                    logger.error('Module ' + self.repo['name'] + ' threw error: ' + str(ex))
+                    logger.error(str(err))
+
+        except Exception as ex:
+            logger.error('APP could not be started! Reason:' + str(ex))
+
         self.running = False
         wss.sendAll('APPSTOP', self.repo['config']['app']['ident'])
 

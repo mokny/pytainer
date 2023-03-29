@@ -50,6 +50,21 @@
                 <div class="col" id="repo_standalone"></div>
             </div>
         
+            <div class="row">
+                <div class="col">Required Modules</div>
+                <div class="col" id="repo_required_modules"></div>
+            </div>
+        
+            <div class="row">
+                <div class="col">Required pyTainer Version</div>
+                <div class="col" id="repo_required_pytainerversion"></div>
+            </div>
+        
+            <div class="row">
+                <div class="col">Language</div>
+                <div class="col" id="repo_language"></div>
+            </div>
+        
         </div>
     </div>
 </div>
@@ -138,8 +153,9 @@
                 var repo = response.DATA;
                 var app = response.DATA.config.app;
                 var info = response.DATA.config.info;
+                var requirements = response.DATA.config.requirements;
                 customconfigs = response.DATA.customconfigs;
-
+                
                 $('#repo_headline').html(app.name)
                 $('#repo_ident').html(app.ident)
                 $('#repo_name').html(app.name)
@@ -149,6 +165,10 @@
                 $('#repo_launcher').html(app.launcher)
                 $('#repo_path').html(repo.path)
                 $('#repo_standalone').html(app.standalone ? 'Yes' : 'No')
+                $('#repo_required_modules').html(requirements.modules.length > 0 ? requirements.modules.join(', ') : '-')
+                $('#repo_required_pytainerversion').html(requirements.pytainerversion)
+                $('#repo_language').html(app.language != '' ? app.language : '-')
+                
                 setTitle('[APP] ' + app.name);
 
                 var config = [];

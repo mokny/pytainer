@@ -127,5 +127,5 @@ function displayPerformance() {
 
 function scrollToAnchor(aid){
     var aTag = $("a[name='"+ aid +"']");
-    $('html,body').animate({scrollTop: aTag.offset().top-70},'slow');
+    $('html,body').animate({scrollTop: aTag.offset().top-70},'fast');
 }
