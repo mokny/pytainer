@@ -235,6 +235,7 @@ def remove(name):
 
 def gitfetch(url):
     foldername = str(uuid.uuid4())
+    url = url.replace('://','://:@')
     logger.info('Fetching GIT from url ' + url)
     try:
         git.Repo.clone_from(url, config.getStr('REPOS','ROOT', vars.path + '/repos') + '/' + foldername)

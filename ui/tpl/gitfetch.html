@@ -6,17 +6,17 @@
         <a href="#git" class="nav-link" data-bs-toggle="tab">GIT</a>
     </li>
     <li class="nav-item">
-        <a href="#messages" class="nav-link" data-bs-toggle="tab">Messages</a>
+        <a href="#create" class="nav-link" data-bs-toggle="tab">Create</a>
     </li>
 </ul>
 <div class="tab-content">
 
-    <div class="tab-pane fade show active" id="templates">
+    <div class="tab-pane show active" id="templates">
         <p>Home tab content ...</p>
     </div>
 
-
-    <div class="tab-pane fade" id="git">
+    <!-- GIT Install-->
+    <div class="tab-pane" id="git">
 
         <div class="card text-bg-dark mb-3">
             <div class="card-header">Install from Github</div>
@@ -33,12 +33,43 @@
             <div class="card-footer" style="font-size: 12px;">
                 pyTainer will clone the GIT repository and install the app automatically
             </div>    
-        </div>        
+        </div>      
+
     </div>
 
+    <!-- Create -->
+    <div class="tab-pane" id="create">
+        <div class="card text-bg-dark mb-3">
+            <div class="card-header">Create new App</div>
+            <div class="card-body">
+        
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Ident:</span>
+                    <input type="text" class="form-control" aria-label="Ident" id="create_ident">
+                </div>
+                
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Name:</span>
+                    <input type="text" class="form-control" aria-label="Ident" id="create_name">
+                </div>
+                
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Author:</span>
+                    <input type="text" class="form-control" aria-label="Ident" id="create_author">
+                </div>
 
-    <div class="tab-pane fade" id="messages">
-        <p>Messages tab content ...</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="create_standalone" checked>
+                    <label class="form-check-label" for="create_standalone">
+                      Standalone
+                    </label>
+                </div>
+            
+            </div>
+            <div class="card-footer" style="font-size: 12px;">
+                <button type="button" class="btn btn-primary" onclick="createApp()">Create</button>
+            </div>    
+        </div>        
     </div>
 </div>
 
@@ -48,7 +79,19 @@
         api_request('gitfetch', {'url':$('#giturl').val()}, function(response) {
             ajax_load('content','tpl/repos.html');
         })
+    }
 
+    function createApp() {
+        app = {
+            'ident': $('#create_ident').val(),
+            'name': $('#create_name').val(),
+            'author': $('#create_author').val(),
+            'standalone': $("#create_standalone").is(':checked'),
+        }
+        api_request('createapp', app, function(response) {
+            ajax_load('content','tpl/repos.html');
+        })
+        console.log(app)
     }
 
     setTitle('Install');

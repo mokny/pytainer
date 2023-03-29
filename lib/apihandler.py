@@ -6,6 +6,12 @@ import logger
 import config
 import os
 import psutil
+import vars
+try:
+    import toml as tomlreader
+except:
+    import tomllib as tomlreader
+
 
 def apiCall(request, path, data):
     response = {
@@ -120,7 +126,62 @@ def apiCall(request, path, data):
     elif path == '/stdin':
         if response['AUTHED']:
             response['OK'] = True
-            repos.stdIn(data['name'], data['message'])
+            message = ''
+            if 'message' in data:
+                message = data['message']
+            repos.stdIn(data['name'], message)
+
+
+    elif path == '/createapp':
+        if response['AUTHED']:
+            response['OK'] = True
+            
+            if data['standalone'] == 'true':
+                 data['standalone'] = True
+            else:
+                data['standalone'] = False
+                
+            tomldata = {
+                'app': {
+                    'ident': data['ident'],
+                    'name': data['name'],
+                    'version': '0.1',
+                    'launcher': 'init.py',
+                    'language': 'python',
+                    'args': '',
+                    'standalone': data['standalone'],
+                },
+
+                'requirements': {
+                    'modules': [],
+                    'pytainerversion': '0.1',
+                },
+
+                'info': {
+                    'author': data['author'],
+                    'website': '',
+                }
+
+            }
+            os.mkdir(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']))
+            #with open('new_toml_file.toml', 'w') as f:
+            
+            with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/pytainer.toml', 'w', encoding='utf-8') as f:
+                new_toml_string = tomlreader.dump(tomldata, f)
+
+            with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py', 'w', encoding='utf-8') as f:
+                #!/usr/bin/python
+                f.write('#!/usr/bin/python\n\n')   
+                f.write('# Required imports for pyTainer\n')   
+                f.write('import sys\n')   
+                f.write('import pathlib\n')
+                f.write('sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve()) + \'/../../ipc\')\n')   
+                f.write('import pytaineripc\n\n')   
+                f.write('# Your code here\n')   
+                f.write('config = pytaineripc.getConfig(\''+data['ident']+'\')\n\n')   
+                f.write('print("pyTainer Default Standalone Template")\n')   
+                
+
 
 
 
