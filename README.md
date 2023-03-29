@@ -57,7 +57,10 @@ FILENAME = mydatabase.sqlite
 In case you did not change settings inside the `config.ini`, simply call `http://<myipaddress>:6880`and login with your username and password.
 
 ## Installing programs on pyTainer
-Basically you can simply create a new directory in the `repos` directory. Create a `pytainer.toml` file (see specifications below) and a main executable file. You can also install repositories from git by entering the URL and giving it a name.
+Open the Webpanel and navigate to `Install`. Here you can install apps from templates with one click, or enter a custom Github URL.
+
+## Installing existing python scripts
+Create a folder for your script inside the `pytainer/repos` directory. Copy your existing script to that directory. Create a `pytainer.toml` file at that directory, copy and paste the toml instructions below to that file and set `launcher` to your python file. That's it.
 
 ## Creating own pyTainer Programs from scratch
 Getting started is quiet easy. Open the pyTainer Webpanel and navigate to `Install` -> `Create`. Now enter a uniqe ident, a title for your app and your name and click create. pyTainer will now create the `pytainer.toml` file and the `init.py` inside a dedicated project directory under `pytainer/repos`. More infos below.
