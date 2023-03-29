@@ -1,0 +1,5 @@
+[pytainer_example]
+title = "pyTainer Example"
+author = "Till Vennefrohne"
+giturl = "https://github.com/mokny/pytainer_example"
+description = "A basic example on how to code Python-Scripts with pyTainer integration"
