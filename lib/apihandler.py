@@ -117,6 +117,11 @@ def apiCall(request, path, data):
             response['OK'] = True
             repos.deleteConfig(data['name'], data['template'])
 
+    elif path == '/stdin':
+        if response['AUTHED']:
+            response['OK'] = True
+            repos.stdIn(data['name'], data['message'])
+
 
 
 

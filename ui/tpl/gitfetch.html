@@ -1,5 +1,47 @@
-URL: <input type="text" id="giturl">
-<button onclick="gitinstall()">Install</button>
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a href="#templates" class="nav-link active" data-bs-toggle="tab">Templates</a>
+    </li>
+    <li class="nav-item">
+        <a href="#git" class="nav-link" data-bs-toggle="tab">GIT</a>
+    </li>
+    <li class="nav-item">
+        <a href="#messages" class="nav-link" data-bs-toggle="tab">Messages</a>
+    </li>
+</ul>
+<div class="tab-content">
+
+    <div class="tab-pane fade show active" id="templates">
+        <p>Home tab content ...</p>
+    </div>
+
+
+    <div class="tab-pane fade" id="git">
+
+        <div class="card text-bg-dark mb-3">
+            <div class="card-header">Install from Github</div>
+            <div class="card-body">
+        
+                <div class="input-group mb-3">
+                    <span class="input-group-text">GIT URL:</span>
+                    <input type="text" class="form-control" aria-label="Github URL" id="giturl">
+                    <span class="input-group-text">
+                        <button type="button" class="btn btn-primary" onclick="gitinstall()">Install</button>
+                    </span>
+                </div>
+            </div>
+            <div class="card-footer" style="font-size: 12px;">
+                pyTainer will clone the GIT repository and install the app automatically
+            </div>    
+        </div>        
+    </div>
+
+
+    <div class="tab-pane fade" id="messages">
+        <p>Messages tab content ...</p>
+    </div>
+</div>
+
 
 <script>
     function gitinstall() {

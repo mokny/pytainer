@@ -250,6 +250,11 @@ def isRunning(modulename):
             return True
     return False
 
+def isAvailable(modulename):
+    if modulename in repos:
+        return True
+    return False
+
 def addOutput(modulename, message):
     if modulename in threads:
         threads[modulename].output.append(message)
@@ -282,6 +287,11 @@ def sendOutput(client):
             }
             wss.send(client,'CONSOLE', m)
 
+def stdIn(modulename, text):
+    if modulename in threads:
+        threads[modulename].sendStdIn(text)
+   
+
 class RepoThread(threading.Thread):
     def __init__(self,  *args, **kwargs):
         super(RepoThread, self).__init__(*args, **kwargs)
@@ -306,6 +316,10 @@ class RepoThread(threading.Thread):
 
     def getOutput(self):
         return self.output
+
+    def sendStdIn(self, text):
+        if self.running:
+            print(text, file=self.process.stdin, flush=True)
 
     def run(self):
         #check pytainer version
@@ -339,9 +353,10 @@ class RepoThread(threading.Thread):
                     cmdparams.append(self.repo['config']['app']['args'].strip())
 
                 #self.process = subprocess.Popen(['python', '-u', self.repo['launcher']], stdout = subprocess.PIPE)
-                self.process = subprocess.Popen(cmdparams, stdout = subprocess.PIPE)
+                self.process = subprocess.Popen(cmdparams, stdout = subprocess.PIPE, stdin = subprocess.PIPE, universal_newlines=True)
                 while self.running:
-                    line = self.process.stdout.readline().rstrip().decode("UTF-8")
+                    #line = self.process.stdout.readline().rstrip().decode("UTF-8")
+                    line = self.process.stdout.readline().rstrip()#.decode("UTF-8")
                     if not line:
                         break
                     print(line)

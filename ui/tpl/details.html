@@ -118,19 +118,19 @@
 </div>
 
 <div class="card text-bg-dark mb-3">
-    <div class="card-header">Command</div>
+    <div class="card-header">Input</div>
     <div class="card-body">
 
         <div class="input-group mb-3">
             <span class="input-group-text">$</span>
-            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" id="stdinmessage">
             <span class="input-group-text">
-                <button type="button" class="btn btn-warning">Midd</button>
+                <button type="button" class="btn btn-primary" onclick="sendStdIn()">Send</button>
             </span>
         </div>
     </div>
     <div class="card-footer" style="font-size: 12px;">
-        Depending on the Standalone-Mode of the app, Commands are transmitted as event or IPC Call.
+        If the program requests user input, you can enter it here.
     </div>    
 </div>
 
@@ -141,6 +141,12 @@
         var customconfigs = [];
         var defaultconfig = [];
         var autoloadconfig = false;
+
+        $('#stdinmessage').keypress(function(e) {
+            if (e.which == '13') {
+                sendStdIn();
+            }
+        });
 
         function getRepoDetails() {
             api_request('getrepodetails', {'name': _active_repo}, function(response) {
@@ -270,6 +276,7 @@
         }
 
         function startDetailsRepo() {
+            clearDetailsConsole()
             var template = $('#detailsconfigselect').val();
             api_request('execrepo', {'name': _active_repo, 'template': template}, function(response) {console.log(response)});
             scrollToAnchor('detailedconsole');
@@ -367,7 +374,12 @@
             }
 
         }
-
+        
+        function sendStdIn() {
+            api_request('stdin', {'name': _active_repo, 'message': $('#stdinmessage').val()}, function(response) {
+            })
+            $('#stdinmessage').val('')
+        }
     
         getRepoDetails();
 
