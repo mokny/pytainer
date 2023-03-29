@@ -3,6 +3,16 @@ VERSION = '1.1.0'
 
 #Default modules
 import sys
+
+if sys.version_info[0] < 3:
+    if sys.version_info[1] < 9:
+        print('Python 3.9 required')
+        exit()
+
+if sys.version_info[1] > 9:
+    print('Python 3.9 required')
+    exit()
+
 import os
 import signal
 import time

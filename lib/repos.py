@@ -15,6 +15,8 @@ import contextlib, io
 from multiprocessing import Process
 import wss
 import uuid
+import traceback
+import pip
 
 try:
     import toml as tomlreader
@@ -32,51 +34,57 @@ def readManifest(path):
 def scanFolder():
     folders = [f.path for f in os.scandir(config.getStr('REPOS','ROOT', vars.path + '/repos')) if f.is_dir()]
     for folder in folders:
-        if os.path.isfile(folder + '/pytainer.toml'):
-            moduleclearname = os.path.basename(os.path.normpath(folder))
-            modulename = moduleclearname
-            modulepath = folder + '/init.py'
-            tomlpath = folder + '/pytainer.toml'
-            
-            cfg = readManifest(tomlpath)
+        reloadRepo(folder)
 
-            modulename = cfg['app']['ident']
+def reloadRepo(folder):
+    if os.path.isfile(folder + '/pytainer.toml'):
+        moduleclearname = os.path.basename(os.path.normpath(folder))
+        modulename = moduleclearname
+        modulepath = folder + '/init.py'
+        tomlpath = folder + '/pytainer.toml'
+        
+        cfg = readManifest(tomlpath)
 
-            repos[modulename] = {
-                'name': modulename,
-                'clearname': moduleclearname,
-                'path': folder,
-                'launcher': folder + '/' + cfg['app']['launcher'],
-                'config': cfg,
-                'module': False,
-                'spec': False,
-            }
-            
-            repoinfos[modulename] = {
-                'name': modulename,
-                'clearname': moduleclearname,
-                'path': folder,
-                'launcher': folder + '/' + cfg['app']['launcher'],
-                'config': cfg,
-            }
+        modulename = cfg['app']['ident']
 
-            repoinfos[modulename] = copy.copy(repos[modulename])
-            del repoinfos[modulename]['module']
-            del repoinfos[modulename]['spec']
-            
-            if cfg['app']['standalone']:
-                logger.info('Standalone ' + repos[modulename]['config']['app']['name'] + ' by ' + repos[modulename]['config']['info']['author'])
-            else:
-                logger.info('Loading App ' + repos[modulename]['config']['app']['name'] + ' by ' + repos[modulename]['config']['info']['author'])
+        repos[modulename] = {
+            'name': modulename,
+            'clearname': moduleclearname,
+            'path': folder,
+            'launcher': folder + '/' + cfg['app']['launcher'],
+            'config': cfg,
+            'module': False,
+            'spec': False,
+        }
+        
+        repoinfos[modulename] = {
+            'name': modulename,
+            'clearname': moduleclearname,
+            'path': folder,
+            'launcher': folder + '/' + cfg['app']['launcher'],
+            'config': cfg,
+        }
 
-                repos[modulename]['spec'] = importlib.util.spec_from_file_location(modulename, repos[modulename]['launcher'])
-                repos[modulename]['module'] = importlib.util.module_from_spec(repos[modulename]['spec'])
-                sys.modules[modulename] = repos[modulename]['module']
+        repoinfos[modulename] = copy.copy(repos[modulename])
+        del repoinfos[modulename]['module']
+        del repoinfos[modulename]['spec']
+        
+        if cfg['app']['standalone']:
+            logger.info('Standalone ' + repos[modulename]['config']['app']['name'] + ' by ' + repos[modulename]['config']['info']['author'])
+        else:
+            logger.info('Loading App ' + repos[modulename]['config']['app']['name'] + ' by ' + repos[modulename]['config']['info']['author'])
+
+            repos[modulename]['spec'] = importlib.util.spec_from_file_location(modulename, repos[modulename]['launcher'])
+            repos[modulename]['module'] = importlib.util.module_from_spec(repos[modulename]['spec'])
+            sys.modules[modulename] = repos[modulename]['module']
+
+
 
 
 def exec(modulename, template):
     if not isRunning(modulename):
         if modulename in repos:
+            reloadRepo(repos[modulename]['path'])
             setActiveConfig(modulename, template)
             threads[modulename] = RepoThread()
             threads[modulename].setRepo(repos[modulename])
@@ -299,7 +307,12 @@ class RepoThread(threading.Thread):
         return self.output
 
     def run(self):
-
+        #install modules if neccessary
+        for mod in self.repo['config']['requirements']['modules']:
+            if not pip.exists(mod):
+                logger.error(self.repo['config']['app']['name'] + " required module " + mod + ', which is missing.')
+                return
+            
         with open(vars.path+'/tmp/'+self.repo['config']['app']['ident']+'_config.json', 'w', encoding='utf-8') as f:
             f.write(json.dumps(self.config))    
 
@@ -325,7 +338,9 @@ class RepoThread(threading.Thread):
                     print(ex)
                     pass
             except Exception as ex:
+                err = traceback.format_exc()
                 logger.error('Module ' + self.repo['name'] + ' threw error: ' + str(ex))
+                logger.error(str(err))
         self.running = False
         wss.sendAll('APPSTOP', self.repo['config']['app']['ident'])
 
