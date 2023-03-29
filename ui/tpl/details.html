@@ -2,6 +2,7 @@
 <div id="detailscontrol">
     <button type="button" class="btn btn-danger" id="details_btn_stop" onclick="stopDetailsRepo()">Stop</button>
     <button type="button" class="btn btn-success" id="details_btn_start" onclick="startDetailsRepo()">Start</button>
+    <button type="button" class="btn btn-success" id="details_btn_reload" onclick="reloadDetailsRepo()">Reload</button>
     <div class="dropdown" style="display:inline-block">
         <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           Remove
@@ -292,7 +293,7 @@
 
         function stopDetailsRepo() {
             api_request('stoprepo', {'name': _active_repo}, function(response) {
-                
+
             });
             return false;
         }
@@ -397,7 +398,12 @@
             return false;
         }
 
-    
+        function reloadDetailsRepo() {
+            /*api_request('removerepo', {'name': _active_repo}, function(response) {
+                ajax_load('content','tpl/repos.html');
+            });*/
+        }
+
         getRepoDetails();
 
 </script>

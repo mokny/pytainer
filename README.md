@@ -177,4 +177,5 @@ There are some more methods available:
 ```python
 response = pytaineripc.getVersion()
 response = pytaineripc.isRunning('OTHERAPPIDENT')
+response = pytaineripc.isAvailable('OTHERAPPIDENT')
 ```
