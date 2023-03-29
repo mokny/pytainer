@@ -41,7 +41,6 @@
         <script>
           function auth() {
               api_request('auth', {'username': $('#username').val(), 'password': $('#password').val()}, function(response) {
-                  console.log(response)
                   if (response['OK']) {
                       ajax_load('body', 'tpl/framework.html')
                   }

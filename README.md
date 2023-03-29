@@ -69,12 +69,17 @@ The pytainer.toml file is the initial file pyTainer looks for. It has to be loca
 ident = "unique_ident"
 name = "My Appname"
 version = "1.0"
-requires = []
 launcher = "my_base_file.py"
+language = "python"           #You may leave this blank, if its not a python app. Or set it to python3.9, python3.11 a.s.o
+args = ""                     #Commandline args that have to be passed to the script
 standalone = true             # Set this to false if you want to 
                               # run your app as pyTainer module,
                               # e.g. for communicating with other
                               # non-standalone apps.
+
+[requirements]
+modules = []
+pytainerversion = '1.0'
 
 [info]
 author = "John Doe"

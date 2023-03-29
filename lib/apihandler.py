@@ -7,6 +7,8 @@ import config
 import os
 import psutil
 import vars
+import urllib.request
+
 try:
     import toml as tomlreader
 except:
@@ -197,6 +199,18 @@ def apiCall(request, path, data):
                     f.write('print("pyTainer Default Module Template. Edit '+config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py' + ' to code your own app.")\n')   
             repos.scanFolder()
 
+    elif path == '/gettemplates':
+        if response['AUTHED']:
+            try:
+                template = urllib.request.urlopen(config.getStr('REPOS','TEMPLATEURL', 'https://raw.githubusercontent.com/mokny/pytainer/main/misc/templates/common.toml'), timeout=10)
+                data = template.read()    
+                text = data.decode('utf-8')
+                response['OK'] = True
+                response['DATA'] = tomlreader.loads(text)
+            except Exception as ex:
+                response['OK'] = False
+                response['DATA'] = False
+                response['ERR'] = 'Failed to load template ' + str(ex)
 
 
 

@@ -75,6 +75,33 @@
 
 
 <script>
+    function getTemplates() {
+        api_request('gettemplates', {'url':$('#giturl').val()}, function(response) {
+            templates = response.DATA;
+            var html = '';
+            for (ident in templates) {
+                var template = templates[ident];
+                html += '<div class="card" data-bs-theme="dark" style="min-width:300px;margin:0px 5px 5px 0px;">';
+                        html +='<div class="card-header">'+template.title+' by ' + template.author + '</div>';
+                        html +='<div class="card-body">';
+                            html += template.description + '<br>';
+                            html += '<a href="'+template.giturl+'" target="_blank">'+template.giturl+'</a>';
+                        html += '</div>';
+                        html +='<p class="text-end px-4"><button class="btn btn-primary" onclick="installTemplate(\''+template.giturl+'\')">Install</button></p>';
+                html += '</div>';
+
+            }
+            $('#templates').html(html);
+        })
+        
+    }
+
+    function installTemplate(giturl) {
+        api_request('gitfetch', {'url':giturl}, function(response) {
+            ajax_load('content','tpl/repos.html');
+        })
+    }
+
     function gitinstall() {
         api_request('gitfetch', {'url':$('#giturl').val()}, function(response) {
             ajax_load('content','tpl/repos.html');
@@ -91,9 +118,8 @@
         api_request('createapp', app, function(response) {
             ajax_load('content','tpl/repos.html');
         })
-        console.log(app)
     }
 
     setTitle('Install');
-
+    getTemplates();
 </script>

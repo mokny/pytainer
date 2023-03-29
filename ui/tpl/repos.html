@@ -23,7 +23,6 @@
 <script>
         function getRepoList() {
             api_request('repolist', false, function(response) {
-                console.log(response)
                 var html = '';
                 for (reponame in response.DATA) {
                     var repo = response.DATA[reponame];
@@ -70,12 +69,16 @@
         }
 
         function startRepo(name) {
-            api_request('execrepo', {'name': name}, function(response) {console.log(response)});
+            api_request('execrepo', {'name': name}, function(response) {
+
+            });
             return false;
         }
 
         function stopRepo(name) {
-            api_request('stoprepo', {'name': name}, function(response) {console.log(response)});
+            api_request('stoprepo', {'name': name}, function(response) {
+
+            });
             return false;
         }
 

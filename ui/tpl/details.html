@@ -156,7 +156,6 @@
 
         function getRepoDetails() {
             api_request('getrepodetails', {'name': _active_repo}, function(response) {
-                console.log(response)
                 $('#detailsconfig').html('');
                 $('#detailsconfigselect').html('');
                 //$('#detailsconsole').html('');
@@ -284,13 +283,17 @@
         function startDetailsRepo() {
             clearDetailsConsole()
             var template = $('#detailsconfigselect').val();
-            api_request('execrepo', {'name': _active_repo, 'template': template}, function(response) {console.log(response)});
+            api_request('execrepo', {'name': _active_repo, 'template': template}, function(response) {
+
+            });
             scrollToAnchor('detailedconsole');
             return false;
         }
 
         function stopDetailsRepo() {
-            api_request('stoprepo', {'name': _active_repo}, function(response) {console.log(response)});
+            api_request('stoprepo', {'name': _active_repo}, function(response) {
+                
+            });
             return false;
         }
 
