@@ -180,8 +180,15 @@ def apiCall(request, path, data):
                     f.write('import pathlib\n')
                     f.write('sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve()) + \'/../../ipc\')\n')   
                     f.write('import pytaineripc\n\n')   
-                    f.write('# Your code here\n')   
-                    f.write('config = pytaineripc.getConfig(\''+data['ident']+'\')\n\n')   
+                    f.write('# Your code here - All below is optional\n\n')   
+                    f.write('def pytainerNotificationHandler(data):\n')   
+                    f.write('   print("Notification received:" + str(data))\n\n')   
+                    f.write('def pytainerEventHandler(data):\n')   
+                    f.write('   print("Event received:" + str(data))\n\n')   
+                    f.write('# Initialize the IPC interface to receive notifications and events\n')   
+                    f.write('pytaineripc.init("'+data['ident']+'", pytainerNotificationHandler, pytainerEventHandler)\n\n')   
+                    f.write('# Get the config from the UI\n')   
+                    f.write('config = pytaineripc.getConfig()\n\n')   
                     f.write('print("pyTainer Default Standalone Template. Edit '+config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py' + ' to code your own app.")\n')   
             else:                
                 with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py', 'w', encoding='utf-8') as f:

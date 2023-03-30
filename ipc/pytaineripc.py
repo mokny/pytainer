@@ -8,23 +8,52 @@ import os
 import copy
 import sys
 import json
+import datetime
 
-_version = "0"
-_ipc = False
 _abspath = str(pathlib.Path(__file__).parent.resolve())
-_notifications = {}
-_key = False
 _clientport = False
 _clientkey = False
+_initialized = False
+_poller = False
+_repoident = False
+
+def init(repo, notificationHandler = False, eventHandler = False):
+    global _clientport
+    global _clientkey
+    global _initialized
+    global _poller
+    global _repoident
+    _repoident = repo
+    if not _initialized:
+        if not _clientport:
+            with open(_abspath+'/../tmp/ipcport.txt', 'r') as file:
+                _clientport = int(file.read())
+            
+        if not _clientkey:
+            with open(_abspath+'/../tmp/ipckey.txt', 'r') as file:
+                _clientkey = file.read()
+
+        _poller = _PollHandler(repo, notificationHandler, eventHandler)
+        _poller.start()
+        
+        _initialized = True
+
+def setPollSpeed(speed):
+    if _poller:
+        if speed < 0.1:
+            speed = 0.1
+        _poller.speed = speed
+        return True
+    return False
 
 # Get the running pyTainer Version
 def getVersion():
     return do('VERSION')
 
 # Get config
-def getConfig(repo):
+def getConfig():
     try:
-        with open(_abspath+'/../tmp/'+repo+'_config.json', 'r') as file:
+        with open(_abspath+'/../tmp/'+_repoident+'_config.json', 'r') as file:
             return json.loads(file.read())
     except:
         return {}
@@ -36,6 +65,10 @@ def notify(repo, data):
         'DATA': data
     }
     return do('NOTIFY', d)
+
+# Fire an event
+def raiseEvent(type):
+    return do('RAISEEVENT', {'type': type, 'repo': _repoident})
 
 # Get notifications from other Repos
 def poll(repo):
@@ -89,106 +122,33 @@ def do(method, payload = False):
     except Exception as ex:
         return False
 
-
-##########################################################################
-
-
-def _IPCServerSetVersion(version):
-    global _version
-    _version = version
-
-def _IPCServerListen(port):
-    global _ipc
-    global _key
-    import repos
-    _key = str(uuid.uuid4())
-    with open(_abspath+'/../tmp/ipcport.txt', 'w', encoding='utf-8') as f:
-        f.write(str(port))    
-    with open(_abspath+'/../tmp/ipckey.txt', 'w', encoding='utf-8') as f:
-        f.write(str(_key))    
-    _ipc = _IPCServer(port, _key, repos)
-    _ipc.start()
-
-
-class _IPCServer(threading.Thread):
-    def __init__(self, port, key, repos):
-        super(_IPCServer, self).__init__()
-        self.setName('IPCServer')
-        self.port = port
-        self.listener = False
-        self.conn = False
-        self.running = False
-        self.clients = {}
-        self.key = key
-        self.repos = repos
-    def run(self):
-        self.running = True
-        self.listener = Listener(('localhost',self.port), authkey=self.key.encode())
-
-        while self.running:
-            conn = self.listener.accept()
-            id = str(uuid.uuid4())
-            self.clients[id] = _IPCServerClient(conn, id, self.repos)
-            self.clients[id].start()
-
-        self.listener.close()
-
-
-class _IPCServerClient(threading.Thread):
-    def __init__(self, conn, id, repos):
-        super(_IPCServerClient, self).__init__()
-        self.setName('IPCServerClient')
-        self.conn = conn
-        self.id = id
-        self.repos = repos
+class _PollHandler(threading.Thread):
+    def __init__(self, repo, notificationHandler, eventHandler):
+        super(_PollHandler, self).__init__()
+        self.setName('IPCPollHandler')
+        self.speed = 1
+        self.notificationHandler = notificationHandler
+        self.eventHandler = eventHandler
+        self.repo = repo
+        self.lastpoll = datetime.datetime.now()
 
     def run(self):
         self.running = True
-        reply = {
-            'OK': False,
-            'DATA': False,
-        }
+
         while self.running:
-            try:
-                msg = self.conn.recv()
+            time.sleep(self.speed)
 
-                if msg['method'] == 'VERSION':
-                    reply['OK'] = True
-                    reply['DATA'] = _version
-                elif msg['method'] == 'NOTIFY':
-                    reply['OK'] = True
-                    if not msg['payload']['REPO'] in _notifications:
-                        _notifications[msg['payload']['REPO']] = []
-                    _notifications[msg['payload']['REPO']].append(msg['payload']['DATA'])
-                elif msg['method'] == 'POLL':
-                    reply['OK'] = True
-                    reply['DATA'] = []
-                    if msg['payload'] in _notifications:
-                        reply['DATA'] = copy.copy(_notifications[msg['payload']])
-                        _notifications[msg['payload']] = []
-                elif msg['method'] == 'START':
-                    reply['OK'] = True
-                    reply['DATA'] = "Starting " + msg['payload']
-                    self.repos.exec(msg['payload'], '')
-                elif msg['method'] == 'STOP':
-                    reply['OK'] = True
-                    reply['DATA'] = "Stopping " + msg['payload']
-                    self.repos.stop(msg['payload'])
-                elif msg['method'] == 'ISRUNNING':
-                    reply['OK'] = True
-                    reply['DATA'] = self.repos.isRunning(msg['payload'])
-                elif msg['method'] == 'ISAVAILABLE':
-                    reply['OK'] = True
-                    reply['DATA'] = self.repos.isAvailable(msg['payload'])
-                    
-                else:
-                    reply['ERR'] = 'Unknown Method'
+            response = do('_AUTOPOLL', {'repo': self.repo, 'lastpoll': self.lastpoll})
 
-                self.conn.send(reply)
-            except Exception as ex:
-                print(ex)
-                self.running = False
-                break
-        self.conn.close()
+            if response['NOTIFICATIONS']:
+                if len(response['NOTIFICATIONS']) > 0:
+                    if self.notificationHandler:
+                        self.notificationHandler(response['NOTIFICATIONS'])
+            if response['EVENTS']:
+                if len(response['EVENTS']) > 0:
+                    if self.eventHandler:
+                        for _ev in response['EVENTS']:
+                            self.eventHandler({'TYPE' : _ev['event'], 'BY': _ev['by']})
 
+            self.lastpoll = datetime.datetime.now()
 

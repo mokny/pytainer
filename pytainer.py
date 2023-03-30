@@ -40,7 +40,7 @@ import shellib
 import vars
 import repos
 import wss
-import pytaineripc
+import pytaineripcserver
 
 vars.pytainerversion = str(VERSION)
 
@@ -123,8 +123,8 @@ db.open(config.getStr('DATABASE','FILENAME',vars.path + '/database.sqlite'))
 
 repos.scanFolder()
 wss.init()
-pytaineripc._IPCServerSetVersion(VERSION)
-pytaineripc._IPCServerListen(config.getInt('IPC','PORT',6882))
+pytaineripcserver._IPCServerSetVersion(VERSION)
+pytaineripcserver._IPCServerListen(config.getInt('IPC','PORT',6882))
 pytainerserver.listen(config.getStr('WEBSERVER','HOST','0.0.0.0'), config.getInt('WEBSERVER','PORT',6880))
 
 
