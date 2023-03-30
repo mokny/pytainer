@@ -172,7 +172,7 @@ config = pytaineripc.getConfig()
 # This is how you send a notification to another app
 response = pytaineripc.notify('APPIDENT', 'MESSAGE')
 ```
-`APPIDENT` is the ident of the other app, `MESSAGE` can be just a string or any object.
+`MYIDENT` is the ident of your app, `APPIDENT` is the ident of a different app, `MESSAGE` can be just a string or any object.
 
 You may also poll notifications manually - Note, this does NOT work for events!
 
@@ -193,4 +193,5 @@ There are some more methods available:
 response = pytaineripc.getVersion()
 response = pytaineripc.isRunning('OTHERAPPIDENT')
 response = pytaineripc.isAvailable('OTHERAPPIDENT')
+response = pytaineripc.raiseEvent('MyCustomEvent')
 ```
