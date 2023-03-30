@@ -184,14 +184,22 @@ response = pytaineripc.poll('MYIDENT')
 
 You can also start and stop other apps:
 ```python
-response = pytaineripc.start('OTHERAPPIDENT')
-response = pytaineripc.stop('OTHERAPPIDENT')
+response = pytaineripc.start('OTHERAPPIDENT') # Run a different app
+response = pytaineripc.stop('OTHERAPPIDENT') # Stop a different app
 ```
 
 There are some more methods available:
 ```python
-response = pytaineripc.getVersion()
-response = pytaineripc.isRunning('OTHERAPPIDENT')
-response = pytaineripc.isAvailable('OTHERAPPIDENT')
-response = pytaineripc.raiseEvent('MyCustomEvent')
+response = pytaineripc.getVersion() # Get pyTainer Version
+response = pytaineripc.isRunning('OTHERAPPIDENT') # Check if a different app is running
+response = pytaineripc.isAvailable('OTHERAPPIDENT') # Check if a different app is installed
+response = pytaineripc.raiseEvent('MyCustomEvent') # Raise a custom event
 ```
+
+## Events
+Events are raised by pyTainer itself or by apps. Events are global, so every app will receive the events (as long as they implemented an event handler...). The IPC module polls for new events every second by default. You can increase the polling speed with `pytaineripc.setSpeed(0.1)` - the lower the value, the faster the poll interval.
+
+If you raise a custom event with `pytaineripc.raiseEvent('MyCustomEvent')`, keep in mind that all apps will receive this event. So you might prefix the event with some ident. Example: `myapp.eventname`. But: The event datatype can be anything. It may be just a string or an object.
+
+## Notifications
+Notifications are sent by one app to another app with `pytaineripc.notify('APPIDENT', 'MESSAGE')`. This notification will be only delivered to apps that were initialized with `APPIDENT`
