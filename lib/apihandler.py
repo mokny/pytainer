@@ -9,12 +9,23 @@ import psutil
 import vars
 import urllib.request
 import pytaineripcserver
+import functools
 
 try:
     import toml as tomlreader
 except:
     import tomllib as tomlreader
 
+def get_directory_structure(rootdir):
+    dir = {}
+    rootdir = rootdir.rstrip(os.sep)
+    start = rootdir.rfind(os.sep) + 1
+    for path, dirs, files in os.walk(rootdir):
+        folders = path[start:].split(os.sep)
+        subdir = dict.fromkeys(files)
+        parent = functools.reduce(dict.get, folders[:-1], dir)
+        parent[folders[-1]] = subdir
+    return dir
 
 def apiCall(request, path, data):
     response = {
@@ -229,6 +240,13 @@ def apiCall(request, path, data):
                 payload = data['payload']
             pytaineripcserver.raiseEvent(type, payload)
 
+    elif path == '/getdirectory':
+        if response['AUTHED']:
+            response['OK'] = True
+            dir = get_directory_structure(repos.repos[data['name']]['path'])
+            for x in dir:
+                response['DATA'] = dir[x]
+                break
 
     else:
         response['ERR'] = 'Unknown Method'

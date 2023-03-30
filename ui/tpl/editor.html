@@ -1,0 +1,49 @@
+<div class="container">
+    <div class="row align-items-start">
+      <div class="col-2 overflow-scroll" id="directory">
+        One of three columns
+      </div>
+      <div class="col-8">
+        <textarea id='editor'></textarea>
+      </div>
+    </div>
+</div>
+
+
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+        mode: "python",
+        lineNumbers: true,
+        indentUnit: 4,
+        matchBrackets: true
+    });
+    editor.save()
+
+    
+    function buildtree(tree, depth=0) {
+        var html = ''
+        if (depth == 0) {
+            html += ('<ul id="collapsedirectory">')
+        } else {
+            html += ('<ul>')
+        }
+        
+        for (name in tree) {
+            console.log(name)
+            html += ('<li>')
+            html += (name);
+            if (tree[name]) {
+                html += buildtree(tree[name], depth+1)
+            }
+            html += ('</li>')
+        }
+        html += ('</ul>')
+        return html;
+    } 
+
+    api_request('getdirectory', {'name': _active_repo}, function(response) {
+        $('#directory').html(buildtree(response.DATA));
+        compactMenu('collapsedirectory',false,'&plusmn; ');
+    })
+
+</script>
