@@ -30,6 +30,7 @@
               <ul class="dropdown-menu dropdown-menu-dark">
                 <li><a class="dropdown-item" href="#" onclick="api_request('reloadrepos', false, function(response) { ajax_load('content','tpl/repos.html')}); return false;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar">Reload Repos</a></li>
                 <li><a class="dropdown-item" href="#" onclick="api_request('getlogs', false, function(response) {}); return false;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar">Logs</a></li>
+                <li><a class="dropdown-item" href="#" onclick="return ajax_load('content','tpl/events.html')" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar">Events</a></li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>

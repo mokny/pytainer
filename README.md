@@ -199,7 +199,7 @@ response = pytaineripc.raiseEvent('MyCustomEvent') # Raise a custom event
 ## Events
 Events are raised by pyTainer itself or by apps. Events are global, so every app will receive the events (as long as they implemented an event handler...). The IPC module polls for new events every second by default. You can increase the polling speed with `pytaineripc.setSpeed(0.1)` - the lower the value, the faster the poll interval.
 
-If you raise a custom event with `pytaineripc.raiseEvent('MyCustomEvent')`, keep in mind that all apps will receive this event. So you might prefix the event with some ident. Example: `myapp.eventname`. But: The event datatype can be anything. It may be just a string or an object.
+If you raise a custom event with `pytaineripc.raiseEvent('MyCustomEvent', payload)` (payload is optional and can be any datatype - also objects), keep in mind that all apps will receive this event. So you might prefix the event with some ident. Example: `myapp.eventname`. 
 
 ## Notifications
 Notifications are sent by one app to another app with `pytaineripc.notify('APPIDENT', 'MESSAGE')`. This notification will be only delivered to apps that were initialized with `APPIDENT`

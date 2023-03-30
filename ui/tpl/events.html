@@ -1,0 +1,47 @@
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a href="#triggerevent" class="nav-link active" data-bs-toggle="tab">Raise Event</a>
+    </li>
+    <li class="nav-item">
+        <a href="#eventlog" class="nav-link" data-bs-toggle="tab">Event Log</a>
+    </li>
+</ul>
+<div class="tab-content">
+
+    <div class="tab-pane show active" id="triggerevent">
+        <div class="card text-bg-dark mb-3">
+            <div class="card-header">Raise custom event</div>
+            <div class="card-body">
+        
+                <div class="input-group mb-3">
+                    <span class="input-group-text">TYPE:</span>
+                    <input type="text" class="form-control" aria-label="Github URL" id="eventtype">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">PAYLOAD:</span>
+                    <input type="text" class="form-control" aria-label="Github URL" id="eventpayload">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="triggerevent()">Raise</button>
+            </div>
+            <div class="card-footer" style="font-size: 12px;">
+                Triggers an event for all running apps. Please note that this panel only supports STRING as payload. In code, you can use any datatype/object.
+            </div>    
+        </div>      
+
+    </div>
+
+    <div class="tab-pane show" id="eventlog">
+        <p>Loading Templates...</p>
+    </div>
+
+    
+</div>
+
+<script>
+    function triggerevent() {
+        api_request('raiseevent', {'type':$('#eventtype').val(), 'payload': $('#eventpayload').val()}, function(response) {
+            ajax_load('content','tpl/repos.html');
+        })
+
+    }
+</script>

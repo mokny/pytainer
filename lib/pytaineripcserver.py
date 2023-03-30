@@ -36,7 +36,9 @@ def _IPCServerListen(port):
     _ipc = _IPCServer(port, _key, repos)
     _ipc.start()
 
-
+def raiseEvent(type, payload):
+    _events.append({'time':datetime.datetime.now(), 'event': type, 'by': '', 'payload': payload})
+        
 class _IPCServer(threading.Thread):
     def __init__(self, port, key, repos):
         super(_IPCServer, self).__init__()
@@ -92,7 +94,7 @@ class _IPCServerClient(threading.Thread):
                     for _ev in copy.copy(_events):
                         if _ev['time'] < datetime.datetime.now()-datetime.timedelta(0,10):
                             _events.remove(_ev)
-                    _events.append({'time':datetime.datetime.now(), 'event': msg['payload']['type'], 'by': msg['payload']['repo']})
+                    _events.append({'time':datetime.datetime.now(), 'event': msg['payload']['type'], 'by': msg['payload']['repo'], 'payload':  msg['payload']['payload']})
                 elif msg['method'] == 'POLL':
                     reply['OK'] = True
                     reply['DATA'] = []

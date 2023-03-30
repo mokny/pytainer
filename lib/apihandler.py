@@ -8,6 +8,7 @@ import os
 import psutil
 import vars
 import urllib.request
+import pytaineripcserver
 
 try:
     import toml as tomlreader
@@ -217,6 +218,16 @@ def apiCall(request, path, data):
                 response['DATA'] = False
                 response['ERR'] = 'Failed to load template ' + str(ex)
 
+    elif path == '/raiseevent':
+        if response['AUTHED']:
+            response['OK'] = True
+            type = ''
+            payload = False
+            if 'type' in data:
+                type = data['type']
+            if 'payload' in data:
+                payload = data['payload']
+            pytaineripcserver.raiseEvent(type, payload)
 
 
     else:

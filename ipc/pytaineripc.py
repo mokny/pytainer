@@ -83,8 +83,8 @@ def notify(repo, data):
     return do('NOTIFY', d)
 
 # Fire an event
-def raiseEvent(type):
-    return do('RAISEEVENT', {'type': type, 'repo': _repoident})
+def raiseEvent(type, payload = False):
+    return do('RAISEEVENT', {'type': type, 'repo': _repoident, 'payload': payload})
 
 # Get notifications from other Repos
 def poll(repo):
@@ -164,7 +164,7 @@ class _PollHandler(threading.Thread):
                 if len(response['EVENTS']) > 0:
                     if self.eventHandler:
                         for _ev in response['EVENTS']:
-                            self.eventHandler({'TYPE' : _ev['event'], 'BY': _ev['by']})
+                            self.eventHandler({'TYPE' : _ev['event'], 'BY': _ev['by'], 'PAYLOAD': _ev['payload']})
 
             self.lastpoll = datetime.datetime.now()
 
