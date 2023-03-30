@@ -1,14 +1,29 @@
-<div class="container">
-    <div class="row align-items-start">
-      <div class="col-2 overflow-scroll" id="directory">
-        One of three columns
-      </div>
-      <div class="col-8">
+<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+    Open File
+</button>
+  
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Directory</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="directory"></div>
+    </div>
+  </div>
+
+  <div class="card text-bg-dark mb-3">
+    <div class="card-header">Raise custom event</div>
+    <div class="card-body">
         <textarea id='editor' style="width:100%"></textarea>
         <button onclick="editorSaveFile()">Save</button>
-      </div>
+        
     </div>
-</div>
+    <div class="card-footer" style="font-size: 12px;">
+        Triggers an event for all running apps. Please note that this panel only supports STRING as payload. In code, you can use any datatype/object.
+    </div>    
+</div>      
+
 
 
 <script>
@@ -37,7 +52,7 @@
                 html += (name);
                 html += buildtree(tree[name], depth+1, name+'/')
             } else {
-                html += '<a href="#" onclick="editorLoadFile(\''+path + name+'\')">'+name+'</a>'
+                html += '<a href="#" onclick="editorLoadFile(\''+path + name+'\')" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">'+name+'</a>'
             }
             html += ('</li>')
         }
