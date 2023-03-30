@@ -156,13 +156,28 @@ import pytaineripc
 ## Usage
 The IPC Interface is easy to use. Sending data to another app works like this:
 ```python
+# Create two functions that will handle Notifications and events
+def pytainerNotificationHandler(data):
+   print("Notification received:" + str(data))
+
+def pytainerEventHandler(data):
+   print("Event received:" + str(data))
+
+# Initialize the IPC interface to receive notifications and events
+pytaineripc.init("MYAPPIDENT", pytainerNotificationHandler, pytainerEventHandler)
+
+# If you defined configuration options at your pytainer.toml file, this is how you get this data
+config = pytaineripc.getConfig()
+
+# This is how you send a notification to another app
 response = pytaineripc.notify('APPIDENT', 'MESSAGE')
 ```
 `APPIDENT` is the ident of the other app, `MESSAGE` can be just a string or any object.
 
-To receive this data from another app, use this code:
+You may also poll notifications manually - Note, this does NOT work for events!
 
 ```python
+# Manual polling for new notifications
 response = pytaineripc.poll('MYIDENT')
 ```
 `MYIDENT` is the ident of the receiving app. Response data comes in an array. Call this function frequently to receive other apps notifications. Once polled, performe actions with the data. The next poll will be empty, unless new notifications for your app arrived.
