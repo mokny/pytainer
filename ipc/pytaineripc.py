@@ -23,6 +23,21 @@ def init(repo, notificationHandler = False, eventHandler = False):
     global _initialized
     global _poller
     global _repoident
+    if _initialized:
+        return False
+    
+    if repo.startswith('/'):
+        try:
+            import toml as tomlreader
+        except:
+            import tomllib as tomlreader
+
+        _repopath = str(pathlib.Path(repo).parent.resolve())
+        if os.path.isfile(_repopath + '/pytainer.toml'):
+            manifest = tomlreader.load(_repopath + '/pytainer.toml')
+            repo = manifest['app']['ident']
+
+
     _repoident = repo
     if not _initialized:
         if not _clientport:
@@ -37,6 +52,7 @@ def init(repo, notificationHandler = False, eventHandler = False):
         _poller.start()
         
         _initialized = True
+    return True
 
 def setPollSpeed(speed):
     if _poller:

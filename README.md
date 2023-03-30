@@ -164,7 +164,7 @@ def pytainerEventHandler(data):
    print("Event received:" + str(data))
 
 # Initialize the IPC interface to receive notifications and events
-pytaineripc.init("MYAPPIDENT", pytainerNotificationHandler, pytainerEventHandler)
+pytaineripc.init(__file__, pytainerNotificationHandler, pytainerEventHandler) # Important: This has to be called from your main launcher file
 
 # If you defined configuration options at your pytainer.toml file, this is how you get this data
 config = pytaineripc.getConfig()
