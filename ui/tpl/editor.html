@@ -4,13 +4,16 @@
         One of three columns
       </div>
       <div class="col-8">
-        <textarea id='editor'></textarea>
+        <textarea id='editor' style="width:100%"></textarea>
+        <button onclick="editorSaveFile()">Save</button>
       </div>
     </div>
 </div>
 
 
 <script>
+    var _active_file = false;
+
     var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
         mode: "python",
         lineNumbers: true,
@@ -20,7 +23,7 @@
     editor.save()
 
     
-    function buildtree(tree, depth=0) {
+    function buildtree(tree, depth=0, path = '') {
         var html = ''
         if (depth == 0) {
             html += ('<ul id="collapsedirectory">')
@@ -29,11 +32,12 @@
         }
         
         for (name in tree) {
-            console.log(name)
             html += ('<li>')
-            html += (name);
             if (tree[name]) {
-                html += buildtree(tree[name], depth+1)
+                html += (name);
+                html += buildtree(tree[name], depth+1, name+'/')
+            } else {
+                html += '<a href="#" onclick="editorLoadFile(\''+path + name+'\')">'+name+'</a>'
             }
             html += ('</li>')
         }
@@ -41,9 +45,25 @@
         return html;
     } 
 
+    api_request('getrepodetails', {'name': _active_repo}, function(response) {
+        setTitle('[EDIT] ' + response.DATA.config.app.name);
+    });
+
     api_request('getdirectory', {'name': _active_repo}, function(response) {
         $('#directory').html(buildtree(response.DATA));
         compactMenu('collapsedirectory',false,'&plusmn; ');
     })
+
+    function editorLoadFile(path) {
+        _active_file = path;
+        api_request('getfilecontent', {'name': _active_repo, 'path': path}, function(response) {
+            editor.getDoc().setValue(response.DATA);
+        })
+    }
+
+    function editorSaveFile() {
+        api_request('savefilecontent', {'name': _active_repo, 'path': _active_file, 'content':editor.getValue()}, function(response) {
+        })
+    }
 
 </script>
