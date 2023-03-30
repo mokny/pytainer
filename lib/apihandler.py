@@ -176,8 +176,7 @@ def apiCall(request, path, data):
                     #!/usr/bin/python
                     f.write('#!/usr/bin/python\n\n')   
                     f.write('# Required imports for pyTainer\n')   
-                    f.write('import sys\n')   
-                    f.write('import pathlib\n')
+                    f.write('import sys, pathlib\n')   
                     f.write('sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve()) + \'/../../ipc\')\n')   
                     f.write('import pytaineripc\n\n')   
                     f.write('# Your code here - All below is optional\n\n')   
@@ -193,8 +192,7 @@ def apiCall(request, path, data):
             else:                
                 with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py', 'w', encoding='utf-8') as f:
                     #!/usr/bin/python
-                    f.write('import sys\n')   
-                    f.write('import pathlib\n')
+                    f.write('import sys, pathlib\n')   
                     f.write('import pytaineripc\n\n')   
                     f.write('# Your code here\n')   
                     f.write('def pytainer_init(app):\n')   
