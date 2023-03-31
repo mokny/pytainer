@@ -1,10 +1,10 @@
 <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-    Open File
+    File Explorer
 </button>
   
   <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Directory</h5>
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">File-Explorer</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
@@ -30,8 +30,7 @@
 
 </div>      
 
-
-
+  
 <script>
     var _active_file = false;
     var editors = [];
@@ -59,7 +58,7 @@
 
             html += ('<li'+cls+'>')
             if (tree[name]) {
-                html += icondir + name;
+                html += '<div style="width:60%">' + icondir + name + '</div><div style="display:inline-block;text-align:right;"><i class="bi bi-folder-plus" onclick="addFolder(\''+path + name+'\')"></i> <i class="bi bi-file-plus" onclick="addFile(\''+path + name+'\')"></i></div>';
                 html += buildtree(tree[name], depth+1, name+'/')
             } else {
                 html += '<a href="#" onclick="editorLoadFile(\''+path + name+'\')" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" class="icon-link">'+iconfile + name+'</a>'
@@ -101,8 +100,10 @@
                 });
                 editors[path].tabid = tabid;
                 editors[path].setSize(null, 600);
-                editors[path].save()            
-                editors[path].getDoc().setValue(response.DATA);
+                editors[path].save()    
+                console.log(response.DATA)    
+                if (response.DATA)    
+                    editors[path].getDoc().setValue(response.DATA);
                 presavecontent[path] = editors[_active_file].getValue();
                 pathtotabid[path] = tabid;
 
@@ -153,4 +154,27 @@
 
     }
 
+
+    function addFolder(path) {
+        showModalInput('New Folder', 'Enter new folder name', function(reply) {
+            api_request('createfolder', {'name': _active_repo, 'path': path + '/' + reply}, function(response) {
+                api_request('getdirectory', {'name': _active_repo}, function(response) {
+                    $('#directory').html(buildtree(response.DATA));
+                    compactMenu('collapsedirectory',false,'');
+                })                
+            })
+        });
+    }
+    
+    function addFile(path) {
+        showModalInput('New File', 'Enter new filename', function(reply) {
+            api_request('createfile', {'name': _active_repo, 'path': path + '/' + reply}, function(response) {
+                api_request('getdirectory', {'name': _active_repo}, function(response) {
+                    $('#directory').html(buildtree(response.DATA));
+                    compactMenu('collapsedirectory',false,'');
+                })                
+            })
+        });
+    }
+    
 </script>

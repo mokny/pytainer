@@ -266,6 +266,18 @@ def apiCall(request, path, data):
                         response['OK'] = True
                         file.write(str(data['content']))
 
+    elif path == '/createfolder':
+        if response['AUTHED']:
+            if not '..' in data['path']:
+                basepath = repos.repos[data['name']]['path']
+                os.mkdir(basepath + '/' + data['path'])
+
+    elif path == '/createfile':
+        if response['AUTHED']:
+            if not '..' in data['path']:
+                basepath = repos.repos[data['name']]['path']
+                with open(basepath + '/' + data['path'], 'w', encoding='utf-8') as f:
+                    f.write('')   
 
     else:
         response['ERR'] = 'Unknown Method'

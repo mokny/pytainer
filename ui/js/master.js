@@ -4,6 +4,8 @@ var output = [];
 var active_console = '';
 var _active_repo = '';
 var _performance = [];
+var _modalinputcallback = false;
+
 
 function test() {
     api_request('test')
@@ -148,3 +150,19 @@ String.fromHtmlEntities = function(string) {
         return String.fromCharCode(s.match(/\d+/gm)[0]);
     })
 };
+
+
+function showModalInput(title, message, callback) {
+    $('#modalinputlabel').html(title)
+    $('#modalinputmessage').html(message)
+    _modalinputcallback = callback;
+    $('#modalinputtext').val('');
+    $('#exampleModal').modal('show');
+}
+
+function modalInputResponse() {
+    if (_modalinputcallback) {
+        _modalinputcallback($('#modalinputtext').val())
+    }
+    $('#exampleModal').modal('hide');
+}
