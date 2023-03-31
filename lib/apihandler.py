@@ -250,19 +250,21 @@ def apiCall(request, path, data):
 
     elif path == '/getfilecontent':
         if response['AUTHED']:
-            basepath = repos.repos[data['name']]['path']
-            if os.path.isfile(basepath + '/' + data['path']):
-                with open(basepath + '/' + data['path'], 'r') as file:
-                    response['OK'] = True
-                    response['DATA'] = file.read()
+            if not '..' in data['path']:
+                basepath = repos.repos[data['name']]['path']
+                if os.path.isfile(basepath + '/' + data['path']):
+                    with open(basepath + '/' + data['path'], 'r') as file:
+                        response['OK'] = True
+                        response['DATA'] = file.read()
 
     elif path == '/savefilecontent':
         if response['AUTHED']:
-            basepath = repos.repos[data['name']]['path']
-            if os.path.isfile(basepath + '/' + data['path']):
-                with open(basepath + '/' + data['path'], 'w') as file:
-                    response['OK'] = True
-                    file.write(str(data['content']))
+            if not '..' in data['path']:
+                basepath = repos.repos[data['name']]['path']
+                if os.path.isfile(basepath + '/' + data['path']):
+                    with open(basepath + '/' + data['path'], 'w') as file:
+                        response['OK'] = True
+                        file.write(str(data['content']))
 
 
     else:

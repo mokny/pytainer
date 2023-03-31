@@ -12,15 +12,16 @@
     </div>
   </div>
 
-  <div class="card text-bg-dark mb-3">
-    <div class="card-header">Raise custom event</div>
+  <div class="card text-bg-dark mb-3 d-none" id="editorholder">
+
+    <ul class="nav nav-tabs" id="editor_tabbar"></ul>
+
     <div class="card-body">
-        <textarea id='editor' style="width:100%"></textarea>
-        <button onclick="editorSaveFile()">Save</button>
-        
+        <div class="tab-content" id="editors"></div>
     </div>
+
     <div class="card-footer" style="font-size: 12px;">
-        Triggers an event for all running apps. Please note that this panel only supports STRING as payload. In code, you can use any datatype/object.
+        <button onclick="editorSaveFile()">Save</button>
     </div>    
 </div>      
 
@@ -28,16 +29,12 @@
 
 <script>
     var _active_file = false;
+    var editors = [];
+    var tabs = [];
+    var tabid = 0;
+    var pathtotabid = [];
+    var presavecontent = [];
 
-    var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
-        mode: "python",
-        lineNumbers: true,
-        indentUnit: 4,
-        matchBrackets: true
-    });
-    editor.save()
-
-    
     function buildtree(tree, depth=0, path = '') {
         var html = ''
         if (depth == 0) {
@@ -70,15 +67,77 @@
     })
 
     function editorLoadFile(path) {
+        $('#editorholder').removeClass('d-none');
+
         _active_file = path;
         api_request('getfilecontent', {'name': _active_repo, 'path': path}, function(response) {
-            editor.getDoc().setValue(response.DATA);
+            if (path in editors) {
+                $('[href="#tab_'+pathtotabid[path]+'"]').tab('show');
+            } else {
+                tabid += 1;
+                tabs[tabid] = path;
+                var filename = path.replace(/^.*[\\\/]/, '')
+                $('#editor_tabbar').append('<li class="nav-item"><a href="#tab_'+tabid+'" id="tabhead_'+tabid+'" class="nav-link" data-bs-toggle="tab" onclick="setActiveTab(\''+path+'\')"><span id="badge_'+tabid+'" class="badge text-bg-danger d-none">&nbsp;</span>&nbsp;'+filename+'<button type="button" class="btn-close d-inline" aria-label="Close" onclick="closeTab('+tabid+')"></button></a></li>')
+                $('#editors').append('<div class="tab-pane active" id="tab_'+tabid+'"><textarea id="editor_'+tabid+'" style="width:100%;"></textarea></div>')
+                editors[path] = CodeMirror.fromTextArea(document.getElementById('editor_'+tabid), {
+                    mode: "python",
+                    lineNumbers: true,
+                    indentUnit: 4,
+                    matchBrackets: true,
+                    tabId: tabid,
+                });
+                editors[path].tabid = tabid;
+                editors[path].setSize(null, 600);
+                editors[path].save()            
+                editors[path].getDoc().setValue(response.DATA);
+                presavecontent[path] = editors[_active_file].getValue();
+                pathtotabid[path] = tabid;
+
+                editors[path].on('change', function(e) {
+                    var tid = e.options.tabId;
+                    if (presavecontent[tabs[tid]] != editors[tabs[tid]].getValue()) {
+                        $('#badge_'+tid).removeClass('d-none')
+                    } else {
+                        $('#badge_'+tid).addClass('d-none')
+                    }
+                })
+                $('[href="#tab_'+tabid+'"]').tab('show');
+
+            }
         })
     }
 
+    function setActiveTab(path) {
+        _active_file = path
+    }
+
+
     function editorSaveFile() {
-        api_request('savefilecontent', {'name': _active_repo, 'path': _active_file, 'content':editor.getValue()}, function(response) {
+        api_request('savefilecontent', {'name': _active_repo, 'path': _active_file, 'content':editors[_active_file].getValue()}, function(response) {
+            presavecontent[_active_file] = editors[_active_file].getValue();
+            $('#badge_'+ pathtotabid[_active_file]).addClass('d-none');
         })
+    }
+
+    function closeTab(id) {
+        $('#tabhead_'+id).remove();
+        $('#tab_'+id).remove();
+        path = tabs[id]
+
+
+        delete presavecontent[path];
+        delete editors[path];
+        delete pathtotabid[path];
+        delete tabs[path];        
+
+        if ($("[id^=tabhead_]").length == 0) {
+            $('#editorholder').addClass('d-none');
+        }        
+
+        for(n in tabs) {
+            $('[href="#tab_'+pathtotabid[tabs[n]]+'"]').tab('show');
+        }
+
     }
 
 </script>

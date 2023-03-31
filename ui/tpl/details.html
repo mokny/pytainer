@@ -261,7 +261,7 @@
 
         function addDetailedConsole(message) {
             if ( $('#detailsconsole').length ) {
-                $('#detailsconsole').append('<div class="detailconsoleline">' + message + '</div>')
+                $('#detailsconsole').append('<div class="detailconsoleline">' + message.toHtmlEntities().replace('\n','<br>') + '</div>')
                 if($("#consoleAutoScroll").is(':checked')) {
                     $('#detailsconsole').scrollTop($('#detailsconsole')[0].scrollHeight);
                 }

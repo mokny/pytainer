@@ -102,7 +102,7 @@
 
         function addCardConsole(repo, message) {
             if ( $('#cardconsole_'+repo).length ) {
-                $('#cardconsole_'+repo).append('<div class="cardconsoleline_'+repo+'">' + message + '</div>')
+                $('#cardconsole_'+repo).append('<div class="cardconsoleline_'+repo+'">' + message.toHtmlEntities().replace('\n','<br>') + '</div>')
                 if ($('.cardconsoleline_'+repo).length > 20) {
                     $('#cardconsole_'+repo).find('.cardconsoleline_'+repo+':lt(1)').remove();
                 }

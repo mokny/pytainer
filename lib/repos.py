@@ -353,14 +353,19 @@ class RepoThread(threading.Thread):
                 if self.repo['config']['app']['args'].strip() != '':
                     cmdparams.append(self.repo['config']['app']['args'].strip())
 
-                #self.process = subprocess.Popen(['python', '-u', self.repo['launcher']], stdout = subprocess.PIPE)
-                self.process = subprocess.Popen(cmdparams, stdout = subprocess.PIPE, stdin = subprocess.PIPE, universal_newlines=True)
-                while self.running:
-                    #line = self.process.stdout.readline().rstrip().decode("UTF-8")
-                    line = self.process.stdout.readline().rstrip()#.decode("UTF-8")
-                    if not line:
-                        break
-                    print(line)
+                try:
+                    self.process = subprocess.Popen(cmdparams, stdout = subprocess.PIPE, stdin = subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                    while self.running:
+                        line = self.process.stdout.readline().rstrip()
+                        if not line:
+                            break
+                        print(line)
+                    err = self.process.stderr.read()                
+                    if err:
+                        print('ERROR: ' + str(err))
+
+                except Exception as ex:
+                    logger.error('Standalone app ' + self.repo['name'] + ' threw error: ' + str(ex))
                 logger.info(self.repo['config']['app']['name'] + ' ended.')
             else:
                 try:
