@@ -67,3 +67,25 @@ body {
   opacity: 0.8;
 }
 
+.directorytree {
+  font-size: 12px;
+  list-style-type: none;
+  margin:0px;
+  padding:0px;
+}
+
+.directorytree li {
+  list-style-type: none;
+  background:#333;
+}
+
+
+.directorytree li.directory {
+  list-style-type: none;
+  background:#111;
+}
+
+.directorytree li a {
+  text-decoration: none;
+  width:100%;
+}

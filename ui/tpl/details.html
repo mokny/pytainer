@@ -390,6 +390,7 @@
             api_request('stdin', {'name': _active_repo, 'message': $('#stdinmessage').val()}, function(response) {
             })
             $('#stdinmessage').val('')
+            scrollToAnchor('detailedconsole');
         }
 
         function detailsRemoveRepo() {

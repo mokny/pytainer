@@ -13,6 +13,14 @@
   </div>
 
   <div class="card text-bg-dark mb-3 d-none" id="editorholder">
+    <div class="card-header">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button onclick="editorSaveFile()" class="btn btn-primary btn-sm">Save</button>
+            <button onclick="" class="btn btn-secondary btn-sm">New</button>
+
+        </div>
+
+    </div>
 
     <ul class="nav nav-tabs" id="editor_tabbar"></ul>
 
@@ -20,9 +28,6 @@
         <div class="tab-content" id="editors"></div>
     </div>
 
-    <div class="card-footer" style="font-size: 12px;">
-        <button onclick="editorSaveFile()">Save</button>
-    </div>    
 </div>      
 
 
@@ -37,19 +42,27 @@
 
     function buildtree(tree, depth=0, path = '') {
         var html = ''
+        var icondir = '<i class="bi bi-folder"></i>';
+        var iconfile = '<i class="bi bi-file"></i>';
+
         if (depth == 0) {
-            html += ('<ul id="collapsedirectory">')
+            html += ('<ul class="directorytree" id="collapsedirectory">')
         } else {
             html += ('<ul>')
         }
         
         for (name in tree) {
-            html += ('<li>')
+            var cls = '';
             if (tree[name]) {
-                html += (name);
+                cls = ' class="directory"';
+            }
+
+            html += ('<li'+cls+'>')
+            if (tree[name]) {
+                html += icondir + name;
                 html += buildtree(tree[name], depth+1, name+'/')
             } else {
-                html += '<a href="#" onclick="editorLoadFile(\''+path + name+'\')" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">'+name+'</a>'
+                html += '<a href="#" onclick="editorLoadFile(\''+path + name+'\')" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" class="icon-link">'+iconfile + name+'</a>'
             }
             html += ('</li>')
         }
@@ -63,7 +76,7 @@
 
     api_request('getdirectory', {'name': _active_repo}, function(response) {
         $('#directory').html(buildtree(response.DATA));
-        compactMenu('collapsedirectory',false,'&plusmn; ');
+        compactMenu('collapsedirectory',false,'');
     })
 
     function editorLoadFile(path) {

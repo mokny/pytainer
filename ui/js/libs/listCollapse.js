@@ -128,6 +128,7 @@ function compactChildren( oOb, oLev, oBsID, oCol, oPM, oT, oML ) {
 			//create a link for expanding/collapsing
 			var newLink = document.createElement('A');
 			newLink.setAttribute( 'href', '#' );
+			newLink.setAttribute( 'class', 'icon-link' );
 			newLink.onclick = new Function( 'clickSmack(this,' + oLev + ',\'' + oBsID + '\',' + oCol + ',\'' + escape(oT) + '\');return false;' );
 			//wrap everything upto the child U/OL in the link
 			if( oML ) { var theHTML = ''; } else {
