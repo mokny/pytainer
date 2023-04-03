@@ -28,6 +28,10 @@ function wss_connect(port) {
                 if (payload == _active_repo)
                     setDetailsRunning(true);
             }
+            if (typeof setEditorRunning !== "undefined") { 
+                if (payload == _active_repo)
+                    setEditorRunning(true);
+            }
         }
 
         if (method == 'APPSTOP') {
@@ -37,6 +41,10 @@ function wss_connect(port) {
             if (typeof setDetailsRunning !== "undefined") { 
                 if (payload == _active_repo)
                     setDetailsRunning(false);
+            }
+            if (typeof setEditorRunning !== "undefined") { 
+                if (payload == _active_repo)
+                    setEditorRunning(false);
             }
         }
 
@@ -57,6 +65,11 @@ function wss_connect(port) {
             if (typeof addDetailedConsole !== "undefined") {
                 if (payload.R == _active_repo) {
                     addDetailedConsole(payload.M);
+                }
+            }            
+            if (typeof addEditorConsole !== "undefined") {
+                if (payload.R == _active_repo) {
+                    addEditorConsole(payload.M);
                 }
             }            
         }
@@ -97,10 +110,11 @@ function api_request(method, payload = false, callback = false) {
     );    
 }
 
-function ajax_load(id, file) {
+function ajax_load(id, file, donehandler=false) {
     $('#' + id).html('<div style="text-align:center"><div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"><span class="visually-hidden">Loading...</span></div></div>');
     $.get(file, function( data ) {
         $('#' + id).html(data);
+        if (donehandler) donehandler();
     });
     return false;
 }

@@ -116,7 +116,8 @@
             'standalone': $("#create_standalone").is(':checked'),
         }
         api_request('createapp', app, function(response) {
-            ajax_load('content','tpl/repos.html');
+            _active_repo = app['ident']
+            ajax_load('content','tpl/details.html');
         })
     }
 

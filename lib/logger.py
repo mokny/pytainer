@@ -70,7 +70,7 @@ class Logger(object):
             if threadname == 'MainThread':
                 self.terminal.write(message + '\n')
             else:
-                self.terminal.write('['+threadname+'] ' + message + '\n')
+                self.terminal.write('['+threadname+'] ' + message.rstrip() + '\n')
                 repos.addOutput(threadname, message)
 
     def flush(self):

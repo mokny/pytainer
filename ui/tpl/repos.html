@@ -51,6 +51,7 @@
                                     html += '<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false"><span class="visually-hidden">Toggle Dropdown</span></button>'                      
                                     html += '<ul class="dropdown-menu">';
                                     html += '<li><a class="dropdown-item" href="#" onclick="return startRepo(\''+repo.name+'\')">Start</a></li>';
+                                    html += '<li><a class="dropdown-item" href="#" onclick="return restartRepo(\''+repo.name+'\')">Restart</a></li>';
                                     html += '<li><a class="dropdown-item" href="#" onclick="return stopRepo(\''+repo.name+'\')">Stop</a></li>';
                                     html += '</ul>';
                                 html += '</div>';
@@ -70,6 +71,13 @@
 
         function startRepo(name) {
             api_request('execrepo', {'name': name}, function(response) {
+
+            });
+            return false;
+        }
+
+        function restartRepo(name) {
+            api_request('restartrepo', {'name': name}, function(response) {
 
             });
             return false;

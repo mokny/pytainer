@@ -2,8 +2,9 @@
 <div id="detailscontrol">
     <button type="button" class="btn btn-danger" id="details_btn_stop" onclick="stopDetailsRepo()">Stop</button>
     <button type="button" class="btn btn-success" id="details_btn_start" onclick="startDetailsRepo()">Start</button>
+    <button type="button" class="btn btn-warning" id="details_btn_restart" onclick="restartDetailsRepo()">Restart</button>
     <button type="button" class="btn btn-success" id="details_btn_reload" onclick="reloadDetailsRepo()">Reload</button>
-    <button type="button" class="btn btn-success" id="details_btn_reload" onclick="ajax_load('content','tpl/editor.html')">Edit</button>
+    <button type="button" class="btn btn-secondary" id="details_btn_edit" onclick="ajax_load('content','tpl/editor.html')">Edit</button>
     <div class="dropdown" style="display:inline-block">
         <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           Remove
@@ -275,9 +276,11 @@
             if (status) {
                 $('#details_btn_stop').show();
                 $('#details_btn_start').hide();
+                $('#details_btn_restart').show();
             } else {
                 $('#details_btn_stop').hide();
                 $('#details_btn_start').show();
+                $('#details_btn_restart').hide();
             }
             setConfigPanelDisabled(!status);
         }
@@ -286,6 +289,16 @@
             clearDetailsConsole()
             var template = $('#detailsconfigselect').val();
             api_request('execrepo', {'name': _active_repo, 'template': template}, function(response) {
+
+            });
+            scrollToAnchor('detailedconsole');
+            return false;
+        }
+
+        function restartDetailsRepo() {
+            clearDetailsConsole()
+            var template = $('#detailsconfigselect').val();
+            api_request('restartrepo', {'name': _active_repo, 'template': template}, function(response) {
 
             });
             scrollToAnchor('detailedconsole');

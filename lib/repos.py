@@ -356,7 +356,7 @@ class RepoThread(threading.Thread):
                 try:
                     self.process = subprocess.Popen(cmdparams, stdout = subprocess.PIPE, stdin = subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                     while self.running:
-                        line = self.process.stdout.readline().rstrip()
+                        line = self.process.stdout.readline()
                         if not line:
                             break
                         print(line)

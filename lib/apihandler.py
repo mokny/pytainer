@@ -81,6 +81,16 @@ def apiCall(request, path, data):
             response['OK'] = True
             response['SUCCESS'] = repos.stop(data['name'])
 
+    elif path == '/restartrepo':
+        if response['AUTHED']:
+            response['OK'] = True
+            response['SUCCESS'] = repos.stop(data['name'])
+            template = ''
+            if 'template' in data:
+                template = data['template']
+            response['DATA'] = repos.exec(data['name'], template)
+
+
     elif path == '/removerepo':
         if response['AUTHED']:
             response['OK'] = True

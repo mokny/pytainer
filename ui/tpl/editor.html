@@ -1,35 +1,69 @@
-<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-    File Explorer
-</button>
-  
+<div id="editorcontrol">
+    <div class="btn-group" role="group" aria-label="Basic example">
+
+        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+            Files
+        </button>
+        <button class="btn btn-secondary" type="button" onclick="ajax_load('content','tpl/details.html')">
+            Details
+        </button>
+        <button id="btn_editor_restart" class="btn btn-warning" type="button" onclick="restartEditorRepo()">
+            (Re)start
+        </button>
+        <button id="btn_editor_stop" class="btn btn-danger" type="button" onclick="stopEditorRepo()">
+            Stop
+        </button>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            Console
+          </button>       
+    </div>  
+    
+</div>
   <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="offcanvasExampleLabel">File-Explorer</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
+        <div style="display:inline-block;text-align:right;"><i class="bi bi-folder-plus" onclick="addFolder('/')"></i> <i class="bi bi-file-plus" onclick="addFile('/')"></i></div>        
         <div id="directory"></div>
     </div>
   </div>
 
-  <div class="card text-bg-dark mb-3 d-none" id="editorholder">
-    <div class="card-header">
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <button onclick="editorSaveFile()" class="btn btn-primary btn-sm">Save</button>
-            <button onclick="" class="btn btn-secondary btn-sm">New</button>
-
-        </div>
-
-    </div>
-
+<div class="card text-bg-dark d-none" id="editorholder" style="margin-top:120px">
     <ul class="nav nav-tabs" id="editor_tabbar"></ul>
 
     <div class="card-body">
-        <div class="tab-content" id="editors"></div>
+        <div class="tab-content flex-fill" id="editors"></div>
     </div>
 
 </div>      
 
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Console</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="editorconsole"></div>
+          <div class="input-group mb-3">
+            <span class="input-group-text">StdIn</span>
+            <input type="text" class="form-control" id="stdineditormessage">
+            <span class="input-group-text">
+                <button type="button" class="btn btn-primary" onclick="sendStdInEditor()">Send</button>
+            </span>
+        </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
   
 <script>
     var _active_file = false;
@@ -71,12 +105,35 @@
 
     api_request('getrepodetails', {'name': _active_repo}, function(response) {
         setTitle('[EDIT] ' + response.DATA.config.app.name);
+        setEditorRunning(response.DATA.running)
     });
 
     api_request('getdirectory', {'name': _active_repo}, function(response) {
         $('#directory').html(buildtree(response.DATA));
         compactMenu('collapsedirectory',false,'');
     })
+
+    for (i in output[_active_repo]) {
+        addEditorConsole(output[_active_repo][i])
+    }
+
+
+    $('#stdineditormessage').keypress(function(e) {
+        if (e.which == '13') {
+            sendStdIn();
+        }
+    });    
+
+    function addEditorConsole(message) {
+        if ( $('#editorconsole').length ) {
+            $('#editorconsole').append('<div class="editorconsoleline">' + message.toHtmlEntities().replace('\n','<br>') + '</div>')
+            $('#editorconsole').scrollTop($('#editorconsole')[0].scrollHeight);
+            if ($('.editorconsoleline').length > 200) {
+                $('#editorconsole').find('.editorconsoleline:lt(1)').remove();
+            }
+        }
+    }
+
 
     function editorLoadFile(path) {
         $('#editorholder').removeClass('d-none');
@@ -90,18 +147,30 @@
                 tabs[tabid] = path;
                 var filename = path.replace(/^.*[\\\/]/, '')
                 $('#editor_tabbar').append('<li class="nav-item"><a href="#tab_'+tabid+'" id="tabhead_'+tabid+'" class="nav-link" data-bs-toggle="tab" onclick="setActiveTab(\''+path+'\')"><span id="badge_'+tabid+'" class="badge text-bg-danger d-none">&nbsp;</span>&nbsp;'+filename+'<button type="button" class="btn-close d-inline" aria-label="Close" onclick="closeTab('+tabid+')"></button></a></li>')
-                $('#editors').append('<div class="tab-pane active" id="tab_'+tabid+'"><textarea id="editor_'+tabid+'" style="width:100%;"></textarea></div>')
+                var buttons = '<div class="mb-1">';
+                    buttons += '<button onclick="editorSaveFile()" class="btn btn-primary btn-sm"><i class="bi-save"> Save</i></button> ';
+                    buttons += '<button onclick="editorInsert(\'ipc\')" class="btn btn-primary btn-sm"><i class="bi-droplet"></i></button> ';
+                buttons += '</div>';
+                $('#editors').append('<div class="tab-pane active" id="tab_'+tabid+'">'+buttons+'<textarea id="editor_'+tabid+'" style="width:100%;"></textarea></div>')
                 editors[path] = CodeMirror.fromTextArea(document.getElementById('editor_'+tabid), {
                     mode: "python",
                     lineNumbers: true,
                     indentUnit: 4,
                     matchBrackets: true,
                     tabId: tabid,
+                    extraKeys: {
+                        "Ctrl-S": function(instance) { 
+                            editorSaveFile();
+                        },
+                        "Cmd-S": function(instance) { 
+                            editorSaveFile();
+                        },
+                    }
+
                 });
                 editors[path].tabid = tabid;
-                editors[path].setSize(null, 600);
+                //editors[path].setSize('100%', '100%');
                 editors[path].save()    
-                console.log(response.DATA)    
                 if (response.DATA)    
                     editors[path].getDoc().setValue(response.DATA);
                 presavecontent[path] = editors[_active_file].getValue();
@@ -177,4 +246,61 @@
         });
     }
     
+    function sendStdInEditor() {
+        api_request('stdin', {'name': _active_repo, 'message': $('#stdineditormessage').val()}, function(response) {
+        })
+        $('#stdinmessage').val('')
+        scrollToAnchor('detailedconsole');
+    }
+
+    function editorInsert(ident) {
+        const doc = editors[_active_file].getDoc()
+        const cursor = doc.getCursor()
+        var data = ''
+
+        if (ident == 'ipc') {
+            data += "import sys, pathlib\n";
+            data += "sys.path.insert(0, str(pathlib.Path(__file__).parent.resolve()) + '/../../ipc')\n";
+            data += "import pytaineripc\n";
+            data += "import pytaineripc\n\n";
+            data += "def pytainerNotificationHandler(data):\n";
+            data += "   print('Notification received:' + str(data))\n\n";
+            data += "def pytainerEventHandler(data):\n";
+            data += "   print('Event received:' + str(data))\n";
+            data += "\n";
+            data += "\n";
+            data += "\n";
+
+        }
+        doc.replaceRange(data, cursor)   
+        
+        editors[_active_file].focus();
+    }
+
+    function restartEditorRepo() {
+        $('#editorconsole').html('');
+        api_request('restartrepo', {'name': _active_repo}, function(response) {
+            $('#staticBackdrop').modal('show');
+        });
+        return false;
+    }
+
+    function stopEditorRepo() {
+        api_request('stoprepo', {'name': _active_repo}, function(response) {
+
+        });
+        return false;
+    }
+
+
+    function setEditorRunning(status) {
+        if (status) {
+            $('#btn_editor_stop').show();
+        } else {
+            $('#btn_editor_stop').hide();
+        }
+    }
+
+    var offcanvas = new bootstrap.Offcanvas(document.getElementById("offcanvasExample"), {backdrop: false})
+    offcanvas.show() 
 </script>
