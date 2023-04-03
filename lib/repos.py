@@ -148,7 +148,6 @@ def loadConfigs(name):
             data = db.get('SELECT * FROM repoconfig WHERE ident="' + name + '"')
             for row in data:
                 custom = json.loads(db.unesc(row['config']))
-                print(custom)
                 for key in copy.copy(custom):
                     if key in defaults:
                         if defaults[key]['type'] == 'int':
