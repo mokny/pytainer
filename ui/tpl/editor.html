@@ -59,7 +59,7 @@
             html += ('<li'+cls+'>')
             if (tree[name]) {
                 html += '<div style="width:60%">' + icondir + name + '</div><div style="display:inline-block;text-align:right;"><i class="bi bi-folder-plus" onclick="addFolder(\''+path + name+'\')"></i> <i class="bi bi-file-plus" onclick="addFile(\''+path + name+'\')"></i></div>';
-                html += buildtree(tree[name], depth+1, name+'/')
+                html += buildtree(tree[name], depth+1, path + name+'/')
             } else {
                 html += '<a href="#" onclick="editorLoadFile(\''+path + name+'\')" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" class="icon-link">'+iconfile + name+'</a>'
             }
