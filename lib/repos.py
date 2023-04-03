@@ -94,7 +94,7 @@ def exec(modulename, template):
 
             if customconfig:
                 for key in threads[modulename].config:
-                    if key in customconfig:
+                    if key in customconfig and key in threads[modulename].config:
                         threads[modulename].config[key] = customconfig[key]
 
             threads[modulename].start()
@@ -149,18 +149,19 @@ def loadConfigs(name):
             for row in data:
                 custom = json.loads(db.unesc(row['config']))
                 print(custom)
-                for key in  copy.copy(custom):
-                    if defaults[key]['type'] == 'int':
-                        if key in custom:
-                            custom[key] = int(custom[key])
-                    if defaults[key]['type'] == 'string':
-                        if key in custom:
-                            custom[key] = str(custom[key])
-                    if defaults[key]['type'] == 'float':
-                        if key in custom:
-                            custom[key] = float(custom[key].replace(',','.'))
+                for key in copy.copy(custom):
+                    if key in defaults:
+                        if defaults[key]['type'] == 'int':
+                            if key in custom:
+                                custom[key] = int(custom[key])
+                        if defaults[key]['type'] == 'string':
+                            if key in custom:
+                                custom[key] = str(custom[key])
+                        if defaults[key]['type'] == 'float':
+                            if key in custom:
+                                custom[key] = float(custom[key].replace(',','.'))
 
-                    ret[row['template']] = custom
+                        ret[row['template']] = custom
     return ret
 
 def setConfig(name, template, config):
