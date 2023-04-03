@@ -414,9 +414,9 @@
         }
 
         function reloadDetailsRepo() {
-            /*api_request('removerepo', {'name': _active_repo}, function(response) {
-                ajax_load('content','tpl/repos.html');
-            });*/
+            api_request('reloadrepos', false, function(response) {
+                ajax_load('content','tpl/details.html');
+            });
         }
 
         getRepoDetails();

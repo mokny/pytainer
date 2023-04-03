@@ -3,6 +3,7 @@ import inspect
 import threading
 import sys
 import repos
+import triggers
 
 LEVEL_ALL = 0
 LEVEL_INFO = 1
@@ -72,7 +73,7 @@ class Logger(object):
             else:
                 self.terminal.write('['+threadname+'] ' + message.rstrip() + '\n')
                 repos.addOutput(threadname, message)
-
+                triggers.consoleline(threadname, message)
     def flush(self):
         pass    
 

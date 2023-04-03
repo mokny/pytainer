@@ -17,6 +17,7 @@ import wss
 import uuid
 import traceback
 import pip
+import triggers
 
 try:
     import toml as tomlreader
@@ -33,6 +34,9 @@ def readManifest(path):
     return tomlreader.load(path)
 
 def scanFolder():
+    global repos, repoinfos
+    repos = {}
+    repoinfos = {}    
     folders = [f.path for f in os.scandir(config.getStr('REPOS','ROOT', vars.path + '/repos')) if f.is_dir()]
     for folder in folders:
         reloadRepo(folder)
