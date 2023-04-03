@@ -79,7 +79,8 @@ function wss_connect(port) {
     };    
 
     wss.onclose = (event) => {
-        window.location.href = '/'
+        //window.location.href = '/'
+        alert("Connection lost, reconnect!")
     };
 }
 
@@ -99,6 +100,7 @@ function api_request(method, payload = false, callback = false) {
             if (callback) {
                 js = JSON.parse(data)
                 if (!js.AUTHED) {
+                    setCookie('LK',false,365);
                     window.location.href = '/'
                     return;
                 }
@@ -179,4 +181,56 @@ function modalInputResponse() {
         _modalinputcallback($('#modalinputtext').val())
     }
     $('#exampleModal').modal('hide');
+}
+
+
+function auth(loginkey = false) {
+    if (!loginkey) {
+      api_request('auth', {'username': $('#username').val(), 'password': $('#password').val()}, function(response) {
+          if (response['OK']) {
+              if($("#permanentlogin").is(':checked')) {
+                  setCookie('LK', response['LK'], 365);
+              } else {
+                setCookie('LK', false, 365);
+              }
+              ajax_load('body', 'tpl/framework.html')
+          } else {
+            setCookie('LK', false, 365);
+          }
+      }) 
+    } else {
+      api_request('authlk', {'loginkey': loginkey}, function(response) {
+          if (response['OK']) {
+              ajax_load('body', 'tpl/framework.html')
+          } else {
+            setCookie('LK', false, 365);
+          }
+      }) 
+    }
+}
+
+function logout() {
+    setCookie('LK', false, 365);
+    window.location.href = '/';   
+    return false; 
+}
+
+function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
 }

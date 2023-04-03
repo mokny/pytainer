@@ -37,6 +37,29 @@ def apiCall(request, path, data):
     if request.sessionGet('user'):
         response['AUTHED'] = True
 
+    if path == '/authlk':
+        if 'loginkey' in data:
+            result = users.authenticatelk(data['loginkey'])
+            if (result):
+                request.sessionWrite('user', result)
+                response['OK'] = True
+                response['AUTHED'] = True
+                response['USERNAME'] = result['username']
+                response['LK'] = result['loginkey']
+            else:
+                request.sessionWrite('user', False)
+                response['OK'] = False
+                response['ERR'] = 'Invalid login'
+                response['AUTHED'] = False
+                response['LK'] = False
+        else:    
+            request.sessionWrite('user', False)
+            response['OK'] = False
+            response['ERR'] = 'Invalid login'
+            response['AUTHED'] = False
+            response['LK'] = False
+
+
     if path == '/auth':
         if 'username' in data and 'password' in data:
             result = users.authenticate(data['username'], data['password'])
@@ -45,16 +68,19 @@ def apiCall(request, path, data):
                 response['OK'] = True
                 response['AUTHED'] = True
                 response['USERNAME'] = result['username']
+                response['LK'] = result['loginkey']
             else:
                 request.sessionWrite('user', False)
                 response['OK'] = False
                 response['ERR'] = 'Invalid login'
                 response['AUTHED'] = False
+                response['LK'] = False
         else:    
             request.sessionWrite('user', False)
             response['OK'] = False
             response['ERR'] = 'Invalid login'
-            response['AUTHED'] = True
+            response['AUTHED'] = False
+            response['LK'] = False
 
 
     elif path == '/ready':

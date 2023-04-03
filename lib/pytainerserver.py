@@ -19,7 +19,11 @@ class clsPytainerServer(BaseHTTPRequestHandler):
 
     def do_GET(self):
         #logger.info("New connection")
-        self.handleRequest('GET', self.path, False)
+        try:
+            self.handleRequest('GET', self.path, False)
+        except Exception as ex:
+            print(ex)
+            pass
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length']) # <--- Gets the size of data

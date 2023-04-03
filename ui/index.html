@@ -43,8 +43,8 @@
                 <input type="password" class="form-control" id="password">
               </div>
               <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Stay logged in</label>
+                <input type="checkbox" class="form-check-input" id="permanentlogin">
+                <label class="form-check-label" for="permanentlogin">Stay logged in</label>
               </div>
               <button class="btn btn-primary" onclick="auth()">Login</button>
 
@@ -53,12 +53,9 @@
         </div>
   
         <script>
-          function auth() {
-              api_request('auth', {'username': $('#username').val(), 'password': $('#password').val()}, function(response) {
-                  if (response['OK']) {
-                      ajax_load('body', 'tpl/framework.html')
-                  }
-              }) 
+          var loginkey = getCookie('LK');
+          if (loginkey) {
+            auth(loginkey);
           }
         </script>
       </div>

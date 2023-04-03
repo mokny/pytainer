@@ -120,7 +120,7 @@
 
     $('#stdineditormessage').keypress(function(e) {
         if (e.which == '13') {
-            sendStdIn();
+            sendStdInEditor();
         }
     });    
 
@@ -249,8 +249,7 @@
     function sendStdInEditor() {
         api_request('stdin', {'name': _active_repo, 'message': $('#stdineditormessage').val()}, function(response) {
         })
-        $('#stdinmessage').val('')
-        scrollToAnchor('detailedconsole');
+        $('#stdineditormessage').val('')
     }
 
     function editorInsert(ident) {
@@ -278,8 +277,8 @@
     }
 
     function restartEditorRepo() {
-        $('#editorconsole').html('');
         api_request('restartrepo', {'name': _active_repo}, function(response) {
+            $('#editorconsole').html('');
             $('#staticBackdrop').modal('show');
         });
         return false;
@@ -301,6 +300,6 @@
         }
     }
 
-    var offcanvas = new bootstrap.Offcanvas(document.getElementById("offcanvasExample"), {backdrop: false})
-    offcanvas.show() 
+    //var offcanvas = new bootstrap.Offcanvas(document.getElementById("offcanvasExample"), {backdrop: false})
+    //offcanvas.show() 
 </script>

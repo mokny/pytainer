@@ -194,6 +194,7 @@ response = pytaineripc.getVersion() # Get pyTainer Version
 response = pytaineripc.isRunning('OTHERAPPIDENT') # Check if a different app is running
 response = pytaineripc.isAvailable('OTHERAPPIDENT') # Check if a different app is installed
 response = pytaineripc.raiseEvent('MyCustomEvent') # Raise a custom event
+pytaineripc.destroy() # Ends the ipc polling thread
 ```
 
 ## Events

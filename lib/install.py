@@ -34,6 +34,7 @@ def fresh():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username VARCHAR(99) NOT NULL UNIQUE,
             password VARCHAR(99) NOT NULL,
+            loginkey VARCHAR(300) NOT NULL,
             permissions INT(11) NOT NULL DEFAULT '0'
         );
     ''')

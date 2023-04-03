@@ -54,6 +54,10 @@ def init(repo, notificationHandler = False, eventHandler = False):
         _initialized = True
     return True
 
+def destroy():
+    if _poller:
+        _poller.running = False
+
 def setPollSpeed(speed):
     if _poller:
         if speed < 0.1:
