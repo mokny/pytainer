@@ -350,6 +350,9 @@ def apiCall(request, path, data):
             response['OK'] = True
             response['DATA'] = triggers.triggers
             
+    elif path == '/removetrigger':
+        if response['AUTHED']:
+            response['OK'] = triggers.removetrigger(data['method'], data['ident'])
 
 
     else:

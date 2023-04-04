@@ -34,16 +34,30 @@ def create(data):
         }
     }
     
-
-    with open(vars.path + '/tmp/triggers.toml', 'w') as toml_file:
-        new_toml_string = tomlreader.dump(triggers, toml_file)    
+    savetriggers()
     return True
 
+def removetrigger(method, ident):
+    del triggers[method][ident]
+    savetriggers()
+    return True
+
+def savetriggers():
+    with open(vars.path + '/tmp/triggers.toml', 'w') as toml_file:
+        new_toml_string = tomlreader.dump(triggers, toml_file)    
+
 def consoleline(app, text):
+    text = text.rstrip()
+    
     # Console Output Triggers
     for key in triggers['consoleline']:
         if triggers['consoleline'][key]['app'] == app or triggers['consoleline'][key]['app'] == '*':
             
+            # Is
+            if triggers['consoleline'][key]['type'] == 'is':
+                if triggers['consoleline'][key]['value'] == text or triggers['consoleline'][key]['value'] == '*':
+                    _execAction('consoleline', key)
+
             # Contains
             if triggers['consoleline'][key]['type'] == 'contains':
                 if triggers['consoleline'][key]['value'] in text or triggers['consoleline'][key]['value'] == '*':

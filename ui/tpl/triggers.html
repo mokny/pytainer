@@ -55,6 +55,7 @@
                 <div class="input-group mb-3">
                     <span class="input-group-text">Type:</span>
                     <select class="form-select" aria-label="Trigger Type" id="condition_type">
+                        <option value="is">is</option>
                         <option value="contains">contains</option>
                         <option value="regex">matches regular expression</option>
                       </select>                    
@@ -107,13 +108,13 @@
 
     function getTriggers() {
         api_request('gettriggers', false, function(response) {
-            console.log(response)
             var triggers = response.DATA;
             var html='';
             for (method in triggers) {
                 for (ident in triggers[method]) {
                     html += '<div>';
-                        html += triggers[method][ident].ident + ' triggers on ' + method + ' from '+triggers[method][ident].app+' if ' + triggers[method][ident].type + ' value ' + triggers[method][ident].value + ' and executes action ' + triggers[method][ident].action.type + ' with value '  + triggers[method][ident].action.value + ' and payload ' + triggers[method][ident].action.payload;
+                        html += triggers[method][ident].ident + ' triggers on app "'+triggers[method][ident].app+'" if '+method+' ' + triggers[method][ident].type + ' "' + triggers[method][ident].value + '" and executes action "' + triggers[method][ident].action.type + '" with value "'  + triggers[method][ident].action.value + '" and payload "' + triggers[method][ident].action.payload + '"';
+                        html += '<button onclick="removeTrigger(\''+ method +'\',\''+ ident +'\')">Remove</button>'
                     html += '</div>';
 
                 }
@@ -142,6 +143,14 @@
         })
 
     }
+
+    function removeTrigger(method, ident) {
+        api_request('removetrigger', {'method': method, 'ident': ident}, function(response) {
+            ajax_load('content','tpl/triggers.html');
+        })
+    }
+
+    
 
     getTriggers();
 </script>

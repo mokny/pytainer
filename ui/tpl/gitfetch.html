@@ -128,7 +128,6 @@
 
     function getPackages() {
         api_request('getpackages', false, function(response) {
-            console.log(response)
             var html = '';
             for (fn in response.DATA) {
                 if (fn.endsWith('.zip')) {
