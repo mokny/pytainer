@@ -19,6 +19,7 @@ import traceback
 import pip
 import triggers
 import shutil
+import urllib
 
 try:
     import toml as tomlreader
@@ -90,9 +91,6 @@ def reloadRepo(folder):
 def exec(modulename, template):
     if not isRunning(modulename):
         if modulename in repos:
-            fn = package(modulename)
-            unpackage(fn)
-
             reloadRepo(repos[modulename]['path'])
             setActiveConfig(modulename, template)
             threads[modulename] = RepoThread()
@@ -135,9 +133,9 @@ def package(modulename):
     logger.info("Packaging " + modulename)
     try:
         if modulename in repos:
-            shutil.make_archive(vars.path + '/tmp/' + modulename, 'zip', repos[modulename]['path'])
-            logger.info('Package created successfully: ' + vars.path + '/tmp/' + modulename + '.zip')
-            return vars.path + '/tmp/' + modulename + '.zip'
+            shutil.make_archive(vars.path + '/packages/' + modulename, 'zip', repos[modulename]['path'])
+            logger.info('Package created successfully: ' + vars.path + '/packages/' + modulename + '.zip')
+            return vars.path + '/packages/' + modulename + '.zip'
         else:
             logger.error('Packaging error: ' + modulename + ' not found.')
             return False
@@ -157,6 +155,7 @@ def unpackage(filename):
                 shutil.copytree(dir, config.getStr('REPOS','ROOT', vars.path + '/repos') + '/' + info['app']['ident'], dirs_exist_ok=True)
                 logger.info("Package installed successfully")
                 shutil.rmtree(dir, True)
+                scanFolder()
                 return True
             else:
                 logger.error("Package already exists.")
@@ -288,13 +287,39 @@ def remove(name):
         logger.error('Repo ' + name + ' is running and can not be removed!')
         return False
 
+def download(url):
+    if url.endswith('.zip'):
+        tmpfile = vars.path + '/tmp/' + str(uuid.uuid4()) + '.zip'
+        urllib.request.urlretrieve(url, tmpfile)
+        res = unpackage(tmpfile)
+        os.remove(tmpfile)
+        return res
+    else:
+        return gitfetch(url)
+
 def gitfetch(url):
     foldername = str(uuid.uuid4())
     url = url.replace('://','://:@')
     logger.info('Fetching GIT from url ' + url)
     try:
-        git.Repo.clone_from(url, config.getStr('REPOS','ROOT', vars.path + '/repos') + '/' + foldername)
-        scanFolder()
+        dir = vars.path + '/tmp/' + str(uuid.uuid4())
+
+        git.Repo.clone_from(url, dir)
+
+        info = getrawinfo(dir)
+        if info:
+            logger.info("Package name: " + info['app']['ident'])
+            if not info['app']['ident'] in repos:
+                shutil.copytree(dir, config.getStr('REPOS','ROOT', vars.path + '/repos') + '/' + info['app']['ident'], dirs_exist_ok=True)
+                logger.info("Package installed successfully")
+                shutil.rmtree(dir, True)
+                scanFolder()
+                return True
+            else:
+                logger.error("Package already exists.")
+                shutil.rmtree(dir, True)
+                return False
+        shutil.rmtree(dir, True)
         return True
     except Exception as ex:
         logger.error("Could not fetch Repository from " + url + " Error: " + str(ex))

@@ -3,16 +3,25 @@
     <button type="button" class="btn btn-danger" id="details_btn_stop" onclick="stopDetailsRepo()">Stop</button>
     <button type="button" class="btn btn-success" id="details_btn_start" onclick="startDetailsRepo()">Start</button>
     <button type="button" class="btn btn-warning" id="details_btn_restart" onclick="restartDetailsRepo()">Restart</button>
-    <button type="button" class="btn btn-success" id="details_btn_reload" onclick="reloadDetailsRepo()">Reload</button>
     <button type="button" class="btn btn-secondary" id="details_btn_edit" onclick="ajax_load('content','tpl/editor.html')">Edit</button>
+    <div class="dropdown" style="display:inline-block">
+        <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Options
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" onclick="return reloadDetailsRepo()">Reload</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return packageRepo()">Create Package</a></li>
+        </ul>
+    </div>    
+    
     <div class="dropdown" style="display:inline-block">
         <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           Remove
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#" onclick="return detailsRemoveRepo()">Remove permanently</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return detailsRemoveRepo()">Remove permanently</a></li>
         </ul>
-      </div>    
+    </div>    
 </div>
 
 <div class="card text-bg-dark mb-3" style="margin-top:120px">
@@ -415,6 +424,12 @@
 
         function reloadDetailsRepo() {
             api_request('reloadrepos', false, function(response) {
+                ajax_load('content','tpl/details.html');
+            });
+        }
+
+        function packageRepo() {
+            api_request('createpackage', {'name': _active_repo}, function(response) {
                 ajax_load('content','tpl/details.html');
             });
         }

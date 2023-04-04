@@ -129,11 +129,11 @@ def apiCall(request, path, data):
 
     elif path == '/gitfetch':
         if response['AUTHED']:
-            if repos.gitfetch(data['url']):
+            if repos.download(data['url']):
                 response['OK'] = True
             else:
                 response['OK'] = False
-                response['ERR'] = 'Repository could not be cloned'
+                response['ERR'] = 'Repository could not be downloaded'
 
     elif path == '/getlogs':
         if response['AUTHED']:
@@ -314,6 +314,24 @@ def apiCall(request, path, data):
                 basepath = repos.repos[data['name']]['path']
                 with open(basepath + '/' + data['path'], 'w', encoding='utf-8') as f:
                     f.write('')   
+
+    elif path == '/getpackages':
+        if response['AUTHED']:
+            response['OK'] = True
+            dir = get_directory_structure(vars.path + '/packages')
+            for x in dir:
+                response['DATA'] = dir[x]
+                break
+
+    elif path == '/installpackage':
+        if response['AUTHED']:
+            response['OK'] = repos.unpackage(vars.path + '/packages/' + data['filename'])
+            
+    elif path == '/createpackage':
+        if response['AUTHED']:
+            response['OK'] = repos.package(data['name'])
+            
+
 
     else:
         response['ERR'] = 'Unknown Method'

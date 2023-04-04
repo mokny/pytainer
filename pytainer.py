@@ -107,6 +107,9 @@ if not os.access(config.getStr('REPOS','ROOT',vars.path + '/repos'), os.W_OK):
 if not os.path.isdir(vars.path + '/tmp'):
     os.mkdir(vars.path + '/tmp')
 
+if not os.path.isdir(vars.path + '/packages'):
+    os.mkdir(vars.path + '/packages')
+
 # Kill old process
 oldpid = shellib.readPIDFile(vars.path + '/tmp/pid.txt')
 if oldpid:

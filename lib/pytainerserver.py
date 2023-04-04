@@ -92,6 +92,8 @@ class clsPytainerServer(BaseHTTPRequestHandler):
             self.send_header("Content-type", "text/css")
         elif path.endswith('.png'):
             self.send_header("Content-type", "image/png")    
+        elif path.endswith('.zip'):
+            self.send_header("Content-type", "application/zip")    
         else:
             self.send_header("Content-type", "text/html")
         for morsel in self.cookie.values():

@@ -8,6 +8,9 @@
     <li class="nav-item">
         <a href="#create" class="nav-link" data-bs-toggle="tab">Create</a>
     </li>
+    <li class="nav-item">
+        <a href="#packages" class="nav-link" data-bs-toggle="tab">Packages</a>
+    </li>
 </ul>
 <div class="tab-content">
 
@@ -71,6 +74,32 @@
             </div>    
         </div>        
     </div>
+
+
+    <!-- Packages -->
+    <div class="tab-pane" id="packages">
+        <div class="card text-bg-dark mb-3">
+            <div class="card-header">Available packages</div>
+            <div class="card-body">
+        
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Package</th>
+                        <th scope="col">Download</th>
+                        <th scope="col">Install</th>
+                      </tr>
+                    </thead>
+                    <tbody id="packagetable">
+                    </tbody>
+                  </table>
+            
+            </div>
+            <div class="card-footer" style="font-size: 12px;">
+                These are local packages inside your packages folder.
+            </div>    
+        </div>        
+    </div>    
 </div>
 
 
@@ -94,6 +123,32 @@
             $('#templates').html(html);
         })
         
+    }
+
+    function getPackages() {
+        api_request('getpackages', false, function(response) {
+            console.log(response)
+            var html = '';
+            for (fn in response.DATA) {
+                if (fn.endsWith('.zip')) {
+                    var pname = fn.replace(/\.[^/.]+$/, "");
+                    html += '<tr>';
+                        html += '<td>'+pname+'</td>'
+                        html += '<td><button class="btn btn-primary">Download</button></td>'
+                        html += '<td><button class="btn btn-danger" onclick="installPackage(\''+fn+'\')">Install</button></td>'
+                    html += '</tr>'
+
+                }
+            }
+            $('#packagetable').html(html);
+        })
+
+    }
+
+    function installPackage(filename) {
+        api_request('installpackage', {'filename':filename}, function(response) {
+            ajax_load('content','tpl/repos.html');
+        })
     }
 
     function installTemplate(giturl) {
@@ -123,4 +178,5 @@
 
     setTitle('Install');
     getTemplates();
+    getPackages();
 </script>

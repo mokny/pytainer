@@ -3,3 +3,9 @@ title = "pyTainer Example"
 author = "Till Vennefrohne"
 giturl = "https://github.com/mokny/pytainer_example"
 description = "A basic example on how to code Python-Scripts with pyTainer integration"
+
+[weather_fetcher]
+title = "Airport Weather Fetcher"
+author = "Till Vennefrohne"
+giturl = "https://github.com/mokny/pytainer_example/raw/main/example_packages/wxfetcher.zip"
+description = "Fetches airport weather and raises it as event WeatherData"
