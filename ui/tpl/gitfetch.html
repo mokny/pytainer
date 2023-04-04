@@ -3,7 +3,7 @@
         <a href="#templates" class="nav-link active" data-bs-toggle="tab">Templates</a>
     </li>
     <li class="nav-item">
-        <a href="#git" class="nav-link" data-bs-toggle="tab">GIT</a>
+        <a href="#git" class="nav-link" data-bs-toggle="tab">URL</a>
     </li>
     <li class="nav-item">
         <a href="#create" class="nav-link" data-bs-toggle="tab">Create</a>
@@ -22,11 +22,11 @@
     <div class="tab-pane" id="git">
 
         <div class="card text-bg-dark mb-3">
-            <div class="card-header">Install from Github</div>
+            <div class="card-header">Install from URL</div>
             <div class="card-body">
         
                 <div class="input-group mb-3">
-                    <span class="input-group-text">GIT URL:</span>
+                    <span class="input-group-text">URL:</span>
                     <input type="text" class="form-control" aria-label="Github URL" id="giturl">
                     <span class="input-group-text">
                         <button type="button" class="btn btn-primary" onclick="gitinstall()">Install</button>
@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="card-footer" style="font-size: 12px;">
-                pyTainer will clone the GIT repository and install the app automatically
+                Accepted URLs are direct links to packages or links to GIT repositories.
             </div>    
         </div>      
 
@@ -88,6 +88,7 @@
                         <th scope="col">Package</th>
                         <th scope="col">Download</th>
                         <th scope="col">Install</th>
+                        <th scope="col">Delete</th>
                       </tr>
                     </thead>
                     <tbody id="packagetable">
@@ -110,7 +111,7 @@
             var html = '';
             for (ident in templates) {
                 var template = templates[ident];
-                html += '<div class="card" data-bs-theme="dark">';
+                html += '<div class="card mb-1" data-bs-theme="dark">';
                         html +='<div class="card-header">'+template.title+' by ' + template.author + '</div>';
                         html +='<div class="card-body">';
                             html += template.description + '<br>';
@@ -135,7 +136,8 @@
                     html += '<tr>';
                         html += '<td>'+pname+'</td>'
                         html += '<td><button class="btn btn-primary">Download</button></td>'
-                        html += '<td><button class="btn btn-danger" onclick="installPackage(\''+fn+'\')">Install</button></td>'
+                        html += '<td><button class="btn btn-success" onclick="installPackage(\''+fn+'\')">Install</button></td>'
+                        html += '<td><button class="btn btn-danger" onclick="deletePackage(\''+fn+'\')">Delete</button></td>'
                     html += '</tr>'
 
                 }
@@ -147,6 +149,12 @@
 
     function installPackage(filename) {
         api_request('installpackage', {'filename':filename}, function(response) {
+            ajax_load('content','tpl/repos.html');
+        })
+    }
+
+    function deletePackage(filename) {
+        api_request('deletepackage', {'filename':filename}, function(response) {
             ajax_load('content','tpl/repos.html');
         })
     }

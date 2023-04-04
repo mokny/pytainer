@@ -327,6 +327,14 @@ def apiCall(request, path, data):
         if response['AUTHED']:
             response['OK'] = repos.unpackage(vars.path + '/packages/' + data['filename'])
             
+    elif path == '/deletepackage':
+        if response['AUTHED']:
+            try:
+                os.remove(vars.path + '/packages/' + data['filename'])
+                response['OK'] = True
+            except:
+                response['OK'] = False
+            
     elif path == '/createpackage':
         if response['AUTHED']:
             response['OK'] = repos.package(data['name'])
