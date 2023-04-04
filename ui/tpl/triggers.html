@@ -1,0 +1,147 @@
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a href="#trigges" class="nav-link active" data-bs-toggle="tab">Triggers</a>
+    </li>
+    <li class="nav-item">
+        <a href="#createtrigger" class="nav-link" data-bs-toggle="tab">Create Trigger</a>
+    </li>
+</ul>
+<div class="tab-content">
+
+    <div class="tab-pane show active" id="trigges">
+ 
+        <div class="card text-bg-dark mb-3">
+            <div class="card-header">Triggers</div>
+            <div class="card-body" id="triggerlist">
+        
+
+            </div>
+        </div>     
+
+
+    </div>
+
+    <div class="tab-pane show" id="createtrigger">
+        
+        <div class="card text-bg-dark mb-3">
+            <div class="card-header">Trigger Ident</div>
+            <div class="card-body">
+        
+                <div class="input-group mb-3">
+                    <span class="input-group-text">IDENT:</span>
+                    <input type="text" class="form-control" aria-label="Trigger Ident" id="trigger_ident">
+                </div>
+
+            </div>
+        </div>     
+
+
+        <div class="card text-bg-dark mb-3">
+            <div class="card-header">Trigger Condition</div>
+            <div class="card-body">
+        
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Method:</span>
+                    <select class="form-select" aria-label="Trigger Method" id="condition_method">
+                        <option value="consoleline">Console Output</option>
+                      </select>                    
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">App:</span>
+                    <input type="text" class="form-control" aria-label="Trigger App" id="condition_app">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Type:</span>
+                    <select class="form-select" aria-label="Trigger Type" id="condition_type">
+                        <option value="contains">contains</option>
+                        <option value="regex">matches regular expression</option>
+                      </select>                    
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Value:</span>
+                    <input type="text" class="form-control" aria-label="Trigger Value" id="condition_value">
+                </div>
+
+            </div>
+        </div>     
+
+        <div class="card text-bg-dark mb-3">
+            <div class="card-header">Trigger Action</div>
+            <div class="card-body">
+        
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Method:</span>
+                    <select class="form-select" aria-label="Trigger Method" id="action_type">
+                        <option value="runapp">Run Application</option>
+                        <option value="raiseevent">Raise Event</option>
+                        <option value="logger.info">Logger Info</option>
+                        <option value="logger.warning">Logger Warning</option>
+                        <option value="logger.error">Logger Error</option>
+                    </select>                    
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Value:</span>
+                    <input type="text" class="form-control" aria-label="Trigger Value" id="action_value">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Payload:</span>
+                    <input type="text" class="form-control" aria-label="Trigger Value" id="action_payload">
+                </div>
+
+                <button type="button" class="btn btn-primary" onclick="createtrigger()">Create</button>
+            </div>
+        </div>     
+
+
+    </div>
+
+    
+</div>
+
+<script>
+
+    function getTriggers() {
+        api_request('gettriggers', false, function(response) {
+            console.log(response)
+            var triggers = response.DATA;
+            var html='';
+            for (method in triggers) {
+                for (ident in triggers[method]) {
+                    html += '<div>';
+                        html += triggers[method][ident].ident + ' triggers on ' + method + ' from '+triggers[method][ident].app+' if ' + triggers[method][ident].type + ' value ' + triggers[method][ident].value + ' and executes action ' + triggers[method][ident].action.type + ' with value '  + triggers[method][ident].action.value + ' and payload ' + triggers[method][ident].action.payload;
+                    html += '</div>';
+
+                }
+
+            }
+            $('#triggerlist').html(html);
+        })
+
+    }
+
+
+    function createtrigger() {
+        var newtrigger = {
+            'trigger_ident': $('#trigger_ident').val(),
+            'condition_method': $('#condition_method').val(),
+            'condition_app': $('#condition_app').val(),
+            'condition_type': $('#condition_type').val(),
+            'condition_value': $('#condition_value').val(),
+            'action_type': $('#action_type').val(),
+            'action_value': $('#action_value').val(),
+            'action_payload': $('#action_payload').val(),
+        }
+
+        api_request('createtrigger', newtrigger, function(response) {
+            ajax_load('content','tpl/triggers.html');
+        })
+
+    }
+
+    getTriggers();
+</script>

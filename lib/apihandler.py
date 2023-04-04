@@ -10,6 +10,7 @@ import vars
 import urllib.request
 import pytaineripcserver
 import functools
+import triggers
 
 try:
     import toml as tomlreader
@@ -338,6 +339,16 @@ def apiCall(request, path, data):
     elif path == '/createpackage':
         if response['AUTHED']:
             response['OK'] = repos.package(data['name'])
+
+    elif path == '/createtrigger':
+        if response['AUTHED']:
+            response['OK'] = triggers.create(data)
+            
+
+    elif path == '/gettriggers':
+        if response['AUTHED']:
+            response['OK'] = True
+            response['DATA'] = triggers.triggers
             
 
 

@@ -4,44 +4,40 @@ import re
 import logger
 import pytaineripcserver
 import db
+import os
 
-triggers = {}
+try:
+    import toml as tomlreader
+except:
+    import tomllib as tomlreader
+
+triggers = {
+    'consoleline': {}
+}
 
 def reloadTriggers():
-    triggers['consoleline'] = {
-        'asd' : {
-            'app': 'triggertest',
-            'type': 'contains',
-            'value': 'cycle',
-            'action': {
-                'type': 'logger.info',
-                'value': 'Cycle found',
-                'payload': False,
-            }
-        },
+    global triggers
+    if os.path.isfile(vars.path + '/tmp/triggers.toml'):
+        triggers = tomlreader.load(vars.path + '/tmp/triggers.toml')
+        
 
-        'asd2' : {
-            'app': '*',
-            'type': 'regex',
-            'value': 'Do.e',
-            'action': {
-                'type': 'logger.info',
-                'value': 'We have a regex match!',
-                'payload': False,
-            }
-        },
-
-        'asd3' : {
-            'app': 'triggertest',
-            'type': 'regex',
-            'value': 'Do.e',
-            'action': {
-                'type': 'raiseevent',
-                'value': 'TRIGGEREVENT',
-                'payload': 'Example Payload',
-            }
+def create(data):
+    triggers[data['condition_method']][data['trigger_ident']] = {
+        'ident': data['trigger_ident'],
+        'app': data['condition_app'],
+        'type': data['condition_type'],
+        'value': data['condition_value'],
+        'action': {
+            'type': data['action_type'],
+            'value': data['action_value'],
+            'payload': data['action_payload'],
         }
     }
+    
+
+    with open(vars.path + '/tmp/triggers.toml', 'w') as toml_file:
+        new_toml_string = tomlreader.dump(triggers, toml_file)    
+    return True
 
 def consoleline(app, text):
     # Console Output Triggers
@@ -82,5 +78,3 @@ def _execAction(method, triggerident):
     if trigger['action']['type'] == 'raiseevent':
         pytaineripcserver.raiseEvent(trigger['action']['value'], trigger['action']['payload'])
 
-
-reloadTriggers()

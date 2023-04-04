@@ -41,6 +41,7 @@ import vars
 import repos
 import wss
 import pytaineripcserver
+import triggers
 
 vars.pytainerversion = str(VERSION)
 
@@ -124,6 +125,7 @@ shellib.writePIDFile(vars.path + '/tmp/pid.txt')
 # Open Database Connection
 db.open(config.getStr('DATABASE','FILENAME',vars.path + '/database.sqlite'))
 
+triggers.reloadTriggers()
 repos.scanFolder()
 wss.init()
 pytaineripcserver._IPCServerSetVersion(VERSION)
