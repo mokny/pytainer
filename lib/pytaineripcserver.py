@@ -11,6 +11,7 @@ import copy
 import sys
 import json
 import datetime
+import random
 
 _abspath = str(pathlib.Path(__file__).parent.resolve())
 
@@ -28,7 +29,8 @@ def _IPCServerListen(port):
     global _ipc
     global _key
     import repos
-    _key = str(uuid.uuid4())
+    _key = str(random.randint(100000,999999))+str(uuid.uuid4())
+    print(_key)
     with open(_abspath+'/../tmp/ipcport.txt', 'w', encoding='utf-8') as f:
         f.write(str(port))    
     with open(_abspath+'/../tmp/ipckey.txt', 'w', encoding='utf-8') as f:

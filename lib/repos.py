@@ -18,6 +18,7 @@ import uuid
 import traceback
 import pip
 import triggers
+import shutil
 
 try:
     import toml as tomlreader
@@ -89,6 +90,9 @@ def reloadRepo(folder):
 def exec(modulename, template):
     if not isRunning(modulename):
         if modulename in repos:
+            fn = package(modulename)
+            unpackage(fn)
+
             reloadRepo(repos[modulename]['path'])
             setActiveConfig(modulename, template)
             threads[modulename] = RepoThread()
@@ -125,6 +129,53 @@ def stop(modulename):
             logger.error('Module ' + modulename + ' not found.')
             return False
     else:
+        return False
+
+def package(modulename):
+    logger.info("Packaging " + modulename)
+    try:
+        if modulename in repos:
+            shutil.make_archive(vars.path + '/tmp/' + modulename, 'zip', repos[modulename]['path'])
+            logger.info('Package created successfully: ' + vars.path + '/tmp/' + modulename + '.zip')
+            return vars.path + '/tmp/' + modulename + '.zip'
+        else:
+            logger.error('Packaging error: ' + modulename + ' not found.')
+            return False
+    except Exception as ex:
+        logger.error('Packaging error: ' + modulename + ' could not be packed. Reason: ' +  str(ex))
+        return False
+    
+def unpackage(filename):
+    try:
+        logger.info("Installing package " + filename)
+        dir = vars.path + '/tmp/' + str(uuid.uuid4())
+        shutil.unpack_archive(filename, dir)
+        info = getrawinfo(dir)
+        if info:
+            logger.info("Package name: " + info['app']['ident'])
+            if not info['app']['ident'] in repos:
+                shutil.copytree(dir, config.getStr('REPOS','ROOT', vars.path + '/repos') + '/' + info['app']['ident'], dirs_exist_ok=True)
+                logger.info("Package installed successfully")
+                shutil.rmtree(dir, True)
+                return True
+            else:
+                logger.error("Package already exists.")
+                shutil.rmtree(dir, True)
+                return False
+        shutil.rmtree(dir, True)
+        return False
+    except Exception as ex:
+        shutil.rmtree(dir, True)
+        logger.info(filename + ' could not be installed: ' + str(ex))
+        return False
+    
+def getrawinfo(path):
+    try:
+        if os.path.isfile(path + '/pytainer.toml'):
+            cfg = readManifest(path + '/pytainer.toml')
+            return cfg
+        return False
+    except:
         return False
     
 def getList():
