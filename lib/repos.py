@@ -43,6 +43,45 @@ def scanFolder():
     for folder in folders:
         reloadRepo(folder)
 
+def runSetup(folder):
+    if os.path.isfile(folder + '/setup.pytainer'):
+        logger.info("Running Setup...")
+        setupfile = open(folder + '/setup.pytainer', 'r')
+        lines = setupfile.readlines()
+        setupfile.close()
+
+        for line in lines:
+            line = line.strip()
+            if not line.startswith('#'):
+                spl = line.split(':')
+                method = False
+                value = False
+                if len(spl) > 0:
+                    method = spl[0].strip()
+                if len(spl) > 1:
+                    value = spl[1].strip()
+
+                if method == 'RUN':
+                    logger.info("Running " + value)
+                    try:
+                        spl = value.split(' ')
+                        process = subprocess.Popen(spl, stdout = subprocess.PIPE, stdin = subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                        while True:
+                            line = process.stdout.readline()
+                            if not line:
+                                break
+                            logger.info(line.rstrip())
+                        err = process.stderr.read()                
+                        if err:
+                            logger.error('ERROR: ' + str(err))
+                    except:
+                        pass
+
+                if method == 'PIPINSTALL' and value:
+                    print("Running " + value)
+                    pip.install(value)
+
+
 def reloadRepo(folder):
     if os.path.isfile(folder + '/pytainer.toml'):
         moduleclearname = os.path.basename(os.path.normpath(folder))
@@ -155,6 +194,7 @@ def unpackage(filename):
                 shutil.copytree(dir, config.getStr('REPOS','ROOT', vars.path + '/repos') + '/' + info['app']['ident'], dirs_exist_ok=True)
                 logger.info("Package installed successfully")
                 shutil.rmtree(dir, True)
+                runSetup(config.getStr('REPOS','ROOT', vars.path + '/repos') + '/' + info['app']['ident'])
                 scanFolder()
                 return True
             else:
@@ -313,6 +353,7 @@ def gitfetch(url):
                 shutil.copytree(dir, config.getStr('REPOS','ROOT', vars.path + '/repos') + '/' + info['app']['ident'], dirs_exist_ok=True)
                 logger.info("Package installed successfully")
                 shutil.rmtree(dir, True)
+                runSetup(config.getStr('REPOS','ROOT', vars.path + '/repos') + '/' + info['app']['ident'])
                 scanFolder()
                 return True
             else:
