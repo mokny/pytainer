@@ -11,6 +11,9 @@
     <li class="nav-item">
         <a href="#packages" class="nav-link" data-bs-toggle="tab">Packages</a>
     </li>
+    <li class="nav-item">
+        <a href="#pip" class="nav-link" data-bs-toggle="tab">PIP</a>
+    </li>
 </ul>
 <div class="tab-content">
 
@@ -101,6 +104,41 @@
             </div>    
         </div>        
     </div>    
+
+    <!-- PIP -->
+    <div class="tab-pane" id="pip">
+        <div class="card text-bg-dark mb-3">
+            <div class="card-header">PIP Install</div>
+            <div class="card-body">
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Package:</span>
+                    <input type="text" class="form-control" aria-label="Github URL" id="pippackage">
+                    <span class="input-group-text">
+                        <button type="button" class="btn btn-primary" onclick="pipinstall()">Go</button>
+                    </span>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="pipinstalluninstall" id="pipinstallcheck" checked>
+                    <label class="form-check-label" for="pipinstallcheck">
+                      Install
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="pipinstalluninstall" id="pipuninstallcheck">
+                    <label class="form-check-label" for="pipuninstallcheck">
+                      Uninstall
+                    </label>
+                </div>
+
+            </div>
+            <div class="card-footer" style="font-size: 12px;">
+                Installs or uninstalls PIP Packages
+            </div>    
+        </div>        
+    </div>    
+
 </div>
 
 
@@ -166,6 +204,16 @@
 
     function gitinstall() {
         api_request('gitfetch', {'url':$('#giturl').val()}, function(response) {
+            ajax_load('content','tpl/repos.html');
+        })
+    }
+
+    function pipinstall() {
+        var method = 'pipinstall';
+        
+        if ($("#pipinstallcheck").is(':checked')) method = 'pipinstall';
+        if ($("#pipuninstallcheck").is(':checked')) method = 'pipuninstall';
+        api_request(method, {'package':$('#pippackage').val()}, function(response) {
             ajax_load('content','tpl/repos.html');
         })
     }

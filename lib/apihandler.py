@@ -11,6 +11,7 @@ import urllib.request
 import pytaineripcserver
 import functools
 import triggers
+import pip
 
 try:
     import toml as tomlreader
@@ -353,6 +354,14 @@ def apiCall(request, path, data):
     elif path == '/removetrigger':
         if response['AUTHED']:
             response['OK'] = triggers.removetrigger(data['method'], data['ident'])
+
+    elif path == '/pipinstall':
+        if response['AUTHED']:
+            response['OK'] = pip.install(data['package'])
+
+    elif path == '/pipuninstall':
+        if response['AUTHED']:
+            response['OK'] = pip.remove(data['package'])
 
 
     else:

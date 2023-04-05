@@ -9,7 +9,15 @@ def exists(modulename):
         return False
 
 def install(package):
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
+    try:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
+        return True
+    except:
+        return False
 
 def remove(package):
-    subprocess.check_call([sys.executable, '-m', 'pip', 'uninstall', package])    
+    try:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'uninstall', '--yes', package])
+        return True
+    except:
+        return False
