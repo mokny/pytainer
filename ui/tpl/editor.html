@@ -159,6 +159,11 @@
                     matchBrackets: true,
                     tabId: tabid,
                     extraKeys: {
+                        "Tab": function (cm) {
+                            var spaces = new Array(cm.getOption('indentUnit') + 1).join(' ');
+                            cm.replaceSelection(spaces);
+                        },
+                                               
                         "Ctrl-S": function(instance) { 
                             editorSaveFile();
                         },
