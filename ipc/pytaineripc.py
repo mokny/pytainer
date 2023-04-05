@@ -66,6 +66,10 @@ def setPollSpeed(speed):
         return True
     return False
 
+# Clear all notifications
+def clearNotifications():
+    return do('CLEARNOTIFICATIONS', _repoident)
+
 # Get the running pyTainer Version
 def getVersion():
     return do('VERSION')

@@ -103,6 +103,10 @@ class _IPCServerClient(threading.Thread):
                     if msg['payload'] in _notifications:
                         reply['DATA'] = copy.copy(_notifications[msg['payload']])
                         _notifications[msg['payload']] = []
+                elif msg['method'] == 'CLEARNOTIFICATIONS':
+                    reply['OK'] = True
+                    reply['DATA'] = []
+                    _notifications[msg['payload']] = []
                 elif msg['method'] == 'START':
                     reply['OK'] = True
                     reply['DATA'] = "Starting " + msg['payload']
