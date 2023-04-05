@@ -53,7 +53,7 @@ def runSetup(folder):
         for line in lines:
             line = line.strip()
             if not line.startswith('#'):
-                spl = line.split(':')
+                spl = line.split(':',1)
                 method = False
                 value = False
                 if len(spl) > 0:

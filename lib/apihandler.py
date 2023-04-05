@@ -221,6 +221,10 @@ def apiCall(request, path, data):
             with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/pytainer.toml', 'w', encoding='utf-8') as f:
                 new_toml_string = tomlreader.dump(tomldata, f)
 
+            with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/setup.pytainer', 'w', encoding='utf-8') as f:
+                f.write('# Sample setup file\n')
+                f.write('# Read the docs for more information\n')
+
             if data['standalone']:
                 with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py', 'w', encoding='utf-8') as f:
                     #!/usr/bin/python
