@@ -206,7 +206,7 @@ If you raise a custom event with `pytaineripc.raiseEvent('MyCustomEvent', payloa
 Notifications are sent by one app to another app with `pytaineripc.notify('APPIDENT', 'MESSAGE')`. This notification will be only delivered to apps that were initialized with `APPIDENT`
 
 # setup.pytainer
-The optional `setup.pytainer` file is optional. It must be located in the main app directory. It's purpose is to setup your app on installation. The file can look like this:
+The file `setup.pytainer` is optional. It must be located in the main app directory. It's purpose is to setup your app on installation. The file can look like this:
 ```
 # Run a command
 RUN: ls -la
@@ -215,7 +215,7 @@ RUN: ls -la
 PIPINSTALL: homeassistant-api
 
 # Copy files from A to B
-COPY: asd asd
+COPY: "path/to/source" "path/to/destination"
 
 # Download a file from the web to some location (location is always relative to the path of your app)
 DL: https://somedomain.tld/file.txt somefolder/file.txt
