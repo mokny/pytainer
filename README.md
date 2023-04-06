@@ -227,3 +227,6 @@ DL: "https://somedomain.tld/file.txt" "somefolder/file.txt"
 DEL: "somefolder"
 ```
 Be advised, that all operations are executed in your app's working directory. So always use relative paths.
+
+# Creating Packages
+Packages are basically a zip file of the complete app. You can create a package at any time by navigating to the app's detail page. Under `Options` you will find `Create Package`. Packages are stored in the `packages` folder.
