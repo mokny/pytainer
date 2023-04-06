@@ -217,6 +217,12 @@ PIPINSTALL: homeassistant-api
 # Copy files from A to B
 COPY: "path/to/source" "path/to/destination"
 
+# Create a new folder
+MKDIR: "somefolder"
+
 # Download a file from the web to some location (location is always relative to the path of your app)
-DL: https://somedomain.tld/file.txt somefolder/file.txt
+DL: "https://somedomain.tld/file.txt" "somefolder/file.txt"
+
+# Delete file or folder
+DEL: "somefolder"
 ```

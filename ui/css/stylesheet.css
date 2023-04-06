@@ -61,8 +61,9 @@ body {
   background-color: #242429;
   z-index: 1000;
   box-shadow: 0px 5px 10px -3px #000000;
-  overflow-x: auto;
-  white-space: nowrap;  
+  /*overflow-x: auto;
+  overflow-y:visible;*/
+  white-space: nowrap; 
 }
 
 #editorconsole {

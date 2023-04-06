@@ -22,6 +22,7 @@ import shutil
 import urllib
 import psutil
 import wss
+import re
 
 try:
     import toml as tomlreader
@@ -80,8 +81,50 @@ def runSetup(folder):
                         pass
 
                 if method == 'PIPINSTALL' and value:
-                    print("Running " + value)
+                    logger.info("PIP install " + value)
                     pip.install(value)
+
+                if method == 'DL' and value:
+                    logger.info("Downloading " + value)
+                    parts = re.findall(r'"(.*?)"', value)
+                    if len(parts) == 2:
+                        try:
+                            urllib.request.urlretrieve(parts[0], folder + '/' + parts[1])
+                        except Exception as ex:
+                            logger.error("Download failed: " + str(ex))
+
+                if method == 'COPY' and value:
+                    logger.info("Copying " + value)
+                    parts = re.findall(r'"(.*?)"', value)
+                    if len(parts) == 2:
+                        try:
+                            if os.path.isdir(folder + '/' + parts[0]):
+                                shutil.copytree(folder + '/' + parts[0], folder + '/' + parts[1], dirs_exist_ok=True)
+                            else:
+                                shutil.copyfile(folder + '/' + parts[0], folder + '/' + parts[1])
+                        except Exception as ex:
+                            logger.error("Copying failed: " + str(ex))
+
+                if method == 'DEL' and value:
+                    logger.info("Deleting " + value)
+                    parts = re.findall(r'"(.*?)"', value)
+                    if len(parts) == 1:
+                        try:
+                            if os.path.isdir(folder + '/' + parts[0]):
+                                shutil.rmtree(folder + '/' + parts[0],ignore_errors=True)
+                            else:
+                                os.remove(folder + '/' + parts[0])
+                        except Exception as ex:
+                            logger.error("Delete failed: " + str(ex))
+
+                if method == 'MKDIR' and value:
+                    logger.info("Creating Directory " + value)
+                    parts = re.findall(r'"(.*?)"', value)
+                    if len(parts) == 1:
+                        try:
+                            os.mkdir(folder + '/' + parts[0])
+                        except Exception as ex:
+                            logger.error("Creating directory failed: " + str(ex))
 
 
 def reloadRepo(folder):
