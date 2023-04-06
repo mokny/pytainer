@@ -226,3 +226,4 @@ DL: "https://somedomain.tld/file.txt" "somefolder/file.txt"
 # Delete file or folder
 DEL: "somefolder"
 ```
+Be advised, that all operations are executed in your app's working directory. So always use relative paths.

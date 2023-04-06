@@ -89,12 +89,14 @@ def runSetup(folder):
                     parts = re.findall(r'"(.*?)"', value)
                     if len(parts) == 2:
                         try:
+                            parts[1] = parts[1].replace('..','')
                             urllib.request.urlretrieve(parts[0], folder + '/' + parts[1])
                         except Exception as ex:
                             logger.error("Download failed: " + str(ex))
 
                 if method == 'COPY' and value:
                     logger.info("Copying " + value)
+                    value = value.replace('..','')
                     parts = re.findall(r'"(.*?)"', value)
                     if len(parts) == 2:
                         try:
@@ -107,6 +109,7 @@ def runSetup(folder):
 
                 if method == 'DEL' and value:
                     logger.info("Deleting " + value)
+                    value = value.replace('..','')
                     parts = re.findall(r'"(.*?)"', value)
                     if len(parts) == 1:
                         try:
@@ -119,6 +122,7 @@ def runSetup(folder):
 
                 if method == 'MKDIR' and value:
                     logger.info("Creating Directory " + value)
+                    value = value.replace('..','')
                     parts = re.findall(r'"(.*?)"', value)
                     if len(parts) == 1:
                         try:
