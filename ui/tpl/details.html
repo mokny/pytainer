@@ -154,6 +154,11 @@
 </div>
 
 
+<div class="card text-bg-dark mb-3" id="readmecard">
+    <div class="card-header">README.md</div>
+    <div class="card-body" style="height:400px; overflow: scroll;" id="readme"></div>
+</div>
+
 
 <script>
         var customconfigs = [];
@@ -266,6 +271,17 @@
             for (i in output[_active_repo]) {
                 addDetailedConsole(output[_active_repo][i])
             }
+
+            api_request('getreporeadme', {'name': _active_repo}, function(response) {
+                if (response['OK']) {
+                    var converter = new showdown.Converter(),
+                    html      = converter.makeHtml(response.DATA);        
+                    $('#readme').html(html)
+                    $('#readmecard').show();
+                } else {
+                    $('#readmecard').hide();
+                }
+            });
 
         }
 

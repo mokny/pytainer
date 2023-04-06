@@ -228,6 +228,9 @@ DEL: "somefolder"
 ```
 Be advised, that all operations are executed in your app's working directory. So always use relative paths.
 
+# README.md
+You can optionally create the file `README.md` in your main directory. The information from this file will be displayed at the app's details page. Use the well known GitHub .md markup for text formatting. Info at: https://docs.github.com/de/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
+
 # Creating Packages
 Packages are basically a zip file of the complete app. You can create a package at any time by navigating to the app's detail page. Under `Options` you will find `Create Package`. Packages are stored in the `packages` folder.
 

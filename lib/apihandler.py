@@ -227,6 +227,10 @@ def apiCall(request, path, data):
                 f.write('# Sample setup file\n')
                 f.write('# Read the docs for more information\n')
 
+            with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/README.md', 'w', encoding='utf-8') as f:
+                f.write('# Readme\n')
+                f.write('An example readme file\n')
+
             if data['standalone']:
                 with open(config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py', 'w', encoding='utf-8') as f:
                     #!/usr/bin/python
@@ -369,6 +373,14 @@ def apiCall(request, path, data):
         if response['AUTHED']:
             response['OK'] = pip.remove(data['package'])
 
+    elif path == '/getreporeadme':
+        if response['AUTHED']:
+            response['OK'] = False
+            basepath = repos.repos[data['name']]['path']
+            if os.path.isfile(basepath + '/README.md'):
+                with open(basepath + '/README.md', 'r') as file:
+                    response['OK'] = True
+                    response['DATA'] = file.read()
 
     else:
         response['ERR'] = 'Unknown Method'
