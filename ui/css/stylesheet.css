@@ -34,6 +34,13 @@ body {
   scrollbar-width: none;  /* Firefox */
 }
 
+.cardperf {
+  background: #333;
+  font-size: 13px;
+  padding:5px 0px 5px 10px;
+  border-radius: 5px;
+}
+
 #detailsconsole {
   height:400px;
   background-color: #242427;
@@ -123,3 +130,4 @@ body {
 .nav-tabs>li {
   float: none;
 }
+

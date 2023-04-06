@@ -20,6 +20,8 @@ import pip
 import triggers
 import shutil
 import urllib
+import psutil
+import wss
 
 try:
     import toml as tomlreader
@@ -413,6 +415,19 @@ def stdIn(modulename, text):
     if modulename in threads:
         threads[modulename].sendStdIn(text)
    
+def getAllPerformance():
+    ret = {}
+    for ident in threads:
+        if threads[ident].ps:
+            ret[ident] = {
+                'cpu_time': threads[ident].ps.cpu_times().system,
+                'cpu_percent': threads[ident].ps.cpu_percent(),
+                'status': threads[ident].ps.status(),
+            }
+
+            if threads[ident].ps.status() == "zombie":
+                threads[ident].ps = False
+    return ret
 
 class RepoThread(threading.Thread):
     def __init__(self,  *args, **kwargs):
@@ -427,6 +442,7 @@ class RepoThread(threading.Thread):
         self.stdin = False
         self.config = {}
         self.output = []
+        self.ps = False
 
     def setRepo(self,repo):
         self.repo = repo
@@ -476,6 +492,7 @@ class RepoThread(threading.Thread):
 
                 try:
                     self.process = subprocess.Popen(cmdparams, stdout = subprocess.PIPE, stdin = subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                    self.ps = psutil.Process(self.process.pid)
                     while self.running:
                         line = self.process.stdout.readline()
                         if not line:

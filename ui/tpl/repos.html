@@ -41,10 +41,16 @@
                         html += '<td><button onclick="removeRepo(\''+repo.name+'\')">Remove</button></td>';*/
                             html +='<div class="card-header">'+repo.config.app.name+'</div>';
                             html +='<div class="card-body">';
-                                //html +='<h5 class="card-title">'+repo.config.app.name+'</h5>';
+
+                                html += '<div class="cardperf" id="cardperf_'+repo.config.app.ident+'">';
+                                    html += ' <i class="bi-cpu" id="cardperf_cpu_'+repo.config.app.ident+'"> -</i>'
+                                    html += ' <i class="bi-cloud" id="cardperf_status_'+repo.config.app.ident+'"> -</i>'
+                                html += '</div>';
+
                                 html +='<p class="card-text">';
                                     html +='<div id="cardconsole_'+repo.config.app.ident+'" class="cardconsole"></div>';
                                 html +='</p>';
+
 
                                 html += '<div class="btn-group">';
                                     html += '<button type="button" class="btn btn-primary" onclick="return repoDetails(\''+repo.name+'\')"><span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" id="apprunning_'+repo.name+'" style="margin-right:8px"></span>Details</button>';   
@@ -123,8 +129,10 @@
             if ( $('#apprunning_'+repo).length ) {
                 if (status) {
                     $('#apprunning_'+repo).show();
+                    $('#cardperf_' + repo).show();
                 } else {
                     $('#apprunning_'+repo).hide();
+                    $('#cardperf_' + repo).hide();
                 }
             }
         }

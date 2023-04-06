@@ -141,6 +141,11 @@ function displayPerformance() {
     if ($('#perf_cpuusage').length) $('#perf_cpuusage').html(_performance.cpuusage)
     if ($('#perf_ramusedpercent').length) $('#perf_ramusedpercent').html(_performance.ramusedpercent)
     if ($('#perf_ramusedgb').length) $('#perf_ramusedgb').html(Math.round(_performance.ramusedgb * 100) / 100)
+
+    for (i in _performance.repos) {
+        if ($('#cardperf_cpu_' + i).length) $('#cardperf_cpu_' + i).html(' ' + _performance.repos[i].cpu_time)
+        if ($('#cardperf_status_' + i).length) $('#cardperf_status_' + i).html(' ' + _performance.repos[i].status)
+    }
 }
 
 function scrollToAnchor(aid){

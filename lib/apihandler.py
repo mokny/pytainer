@@ -162,6 +162,7 @@ def apiCall(request, path, data):
                 'cpuusage': (load15/os.cpu_count()) * 100,
                 'ramusedpercent': psutil.virtual_memory()[2],
                 'ramusedgb': psutil.virtual_memory()[3]/1000000000,
+                'repos': repos.getAllPerformance(),
             }
 
     elif path == '/saverepoconfig':
