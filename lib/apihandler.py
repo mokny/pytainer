@@ -154,6 +154,7 @@ def apiCall(request, path, data):
 
     elif path == '/performance':
         if response['AUTHED']:
+            ps = psutil.Process(os.getpid())
             load1, load5, load15 = psutil.getloadavg()
 
             response['OK'] = True

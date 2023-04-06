@@ -122,7 +122,18 @@ function ajax_load(id, file, donehandler=false) {
 }
 
 function setTitle(text) {
+    text = truncateString(text,15);
     $('#brand').html('<img src="img/pytainer.png" width="30" height="30" class="d-inline-block align-top" alt="" style="margin-right:10px">' + text)
+}
+
+function truncateString(str, num) {
+    // If the length of str is less than or equal to num
+    // just return str--don't truncate it.
+    if (str.length <= num) {
+      return str
+    }
+    // Return str truncated with '...' concatenated to the end of str.
+    return str.slice(0, num) + '...'
 }
 
 function performanceRequestData() {
@@ -137,14 +148,14 @@ function performanceRequestData() {
 }
 
 function displayPerformance() {
-    if ($('#perf_cpupercent').length) $('#perf_cpupercent').html(_performance.cpupercent)
+    if ($('#perf_cpupercent').length) $('#perf_cpupercent').html(_performance.cpupercent.toFixed(2))
     if ($('#perf_cpuusage').length) $('#perf_cpuusage').html(_performance.cpuusage)
-    if ($('#perf_ramusedpercent').length) $('#perf_ramusedpercent').html(_performance.ramusedpercent)
-    if ($('#perf_ramusedgb').length) $('#perf_ramusedgb').html(Math.round(_performance.ramusedgb * 100) / 100)
+    if ($('#perf_ramusedpercent').length) $('#perf_ramusedpercent').html(_performance.ramusedpercent.toFixed(2))
+    if ($('#perf_ramusedgb').length) $('#perf_ramusedgb').html(_performance.ramusedgb.toFixed(2))
 
     for (i in _performance.repos) {
-        if ($('#cardperf_cpu_' + i).length) $('#cardperf_cpu_' + i).html(' ' + _performance.repos[i].cpu_time)
-        if ($('#cardperf_cpup_' + i).length) $('#cardperf_cpup_' + i).html(' ' + _performance.repos[i].cpu_percent)
+        if ($('#cardperf_cpu_' + i).length) $('#cardperf_cpu_' + i).html(' ' + _performance.repos[i].cpu_time.toFixed(2))
+        if ($('#cardperf_cpup_' + i).length) $('#cardperf_cpup_' + i).html(' ' + _performance.repos[i].cpu_percent.toFixed(2) + '%')
         if ($('#cardperf_status_' + i).length) $('#cardperf_status_' + i).html(' ' + _performance.repos[i].status)
     }
 }

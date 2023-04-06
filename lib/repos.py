@@ -421,7 +421,7 @@ def getAllPerformance():
         if threads[ident].ps:
             ret[ident] = {
                 'cpu_time': threads[ident].ps.cpu_times().system,
-                'cpu_percent': threads[ident].ps.cpu_percent(),
+                'cpu_percent': threads[ident].ps.cpu_percent() / psutil.cpu_count(),
                 'status': threads[ident].ps.status(),
             }
 
