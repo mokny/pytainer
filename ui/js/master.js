@@ -144,6 +144,7 @@ function displayPerformance() {
 
     for (i in _performance.repos) {
         if ($('#cardperf_cpu_' + i).length) $('#cardperf_cpu_' + i).html(' ' + _performance.repos[i].cpu_time)
+        if ($('#cardperf_cpup_' + i).length) $('#cardperf_cpup_' + i).html(' ' + _performance.repos[i].cpu_percent)
         if ($('#cardperf_status_' + i).length) $('#cardperf_status_' + i).html(' ' + _performance.repos[i].status)
     }
 }

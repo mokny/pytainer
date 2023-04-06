@@ -44,8 +44,11 @@
 
                                 html += '<div class="cardperf" id="cardperf_'+repo.config.app.ident+'">';
                                     html += ' <i class="bi-cpu" id="cardperf_cpu_'+repo.config.app.ident+'"> -</i>'
+                                    html += ' <i class="bi-percent" id="cardperf_cpup_'+repo.config.app.ident+'"> -</i>'
                                     html += ' <i class="bi-cloud" id="cardperf_status_'+repo.config.app.ident+'"> -</i>'
                                 html += '</div>';
+
+                                html += '<div class="cardperf" id="cardperf_stopped_'+repo.config.app.ident+'"><i class="bi-slash-circle"> Stopped</i></div>';
 
                                 html +='<p class="card-text">';
                                     html +='<div id="cardconsole_'+repo.config.app.ident+'" class="cardconsole"></div>';
@@ -128,9 +131,11 @@
         function setRunning(repo, status) {
             if ( $('#apprunning_'+repo).length ) {
                 if (status) {
+                    $('#cardperf_stopped_'+repo).hide();
                     $('#apprunning_'+repo).show();
                     $('#cardperf_' + repo).show();
                 } else {
+                    $('#cardperf_stopped_'+repo).show();
                     $('#apprunning_'+repo).hide();
                     $('#cardperf_' + repo).hide();
                 }
