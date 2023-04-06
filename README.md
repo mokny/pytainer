@@ -230,3 +230,6 @@ Be advised, that all operations are executed in your app's working directory. So
 
 # Creating Packages
 Packages are basically a zip file of the complete app. You can create a package at any time by navigating to the app's detail page. Under `Options` you will find `Create Package`. Packages are stored in the `packages` folder.
+
+# Upgrading an existing program to a pyTainer App
+Quiet easy. Copy your app to a new folder in the `pytainer/repos` directory. Now create a `pytainer.toml` file (see above), that's it. Now, after reloading the pyTainer-Apps, you can run your script inside pyTainer.
