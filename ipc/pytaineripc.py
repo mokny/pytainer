@@ -95,7 +95,9 @@ def raiseEvent(type, payload = False):
     return do('RAISEEVENT', {'type': type, 'repo': _repoident, 'payload': payload})
 
 # Get notifications from other Repos
-def poll(repo):
+def poll(repo = False):
+    if not repo:
+        repo = _repoident
     return do('POLL', repo)
 
 # Stop a Repo
