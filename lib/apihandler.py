@@ -245,7 +245,7 @@ def apiCall(request, path, data):
                     f.write('def pytainerEventHandler(data):\n')   
                     f.write('   print("Event received:" + str(data))\n\n')   
                     f.write('# Initialize the IPC interface to receive notifications and events\n')   
-                    f.write('pytaineripc.init(__file__, pytainerNotificationHandler, pytainerEventHandler)\n\n')   
+                    f.write('pytaineripc.setHandlers(pytainerNotificationHandler, pytainerEventHandler)\n\n')   
                     f.write('# Get the config from the UI\n')   
                     f.write('config = pytaineripc.getConfig()\n\n')   
                     f.write('print("pyTainer Default Standalone Template. Edit '+config.getStr('REPOS','ROOT', vars.path + '/repos/' + data['ident']) + '/init.py' + ' to code your own app.")\n')   
