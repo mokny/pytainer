@@ -9,13 +9,21 @@ import copy
 import sys
 import json
 import datetime
+import sys
+import __main__
+#parent_module = sys.modules['.'.join(__name__.split('.')[:-1]) or '__main__']
+#print(sys.modules['__main__'].__file__)
+#print("####################" + str(parent_module))
 
+_launcher = __main__.__file__
 _abspath = str(pathlib.Path(__file__).parent.resolve())
 _clientport = False
 _clientkey = False
 _initialized = False
 _poller = False
 _repoident = False
+
+
 
 def init(repo, notificationHandler = False, eventHandler = False):
     global _clientport
@@ -53,6 +61,25 @@ def init(repo, notificationHandler = False, eventHandler = False):
         
         _initialized = True
     return True
+
+def setHandlers(notificationHandler, eventHandler):
+    if _poller:
+        _poller.notificationHandler = notificationHandler
+        _poller.eventHandler = eventHandler
+        return True
+    return False
+        
+def setNotificationHandler(notificationHandler):
+    if _poller:
+        _poller.notificationHandler = notificationHandler
+        return True
+    return False        
+
+def setEventHandler(eventHandler):
+    if _poller:
+        _poller.eventHandler = eventHandler
+        return True
+    return False        
 
 def destroy():
     if _poller:
@@ -178,3 +205,7 @@ class _PollHandler(threading.Thread):
 
             self.lastpoll = datetime.datetime.now()
 
+
+
+##### Init
+init(_launcher, False, False)

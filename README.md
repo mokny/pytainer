@@ -164,7 +164,7 @@ def pytainerEventHandler(data):
    print("Event received:" + str(data))
 
 # Initialize the IPC interface to receive notifications and events
-pytaineripc.init(__file__, pytainerNotificationHandler, pytainerEventHandler) # Important: This has to be called from your main launcher file
+pytaineripc.setHandlers(pytainerNotificationHandler, pytainerEventHandler) # Important: This has to be called from your main launcher file
 
 # If you defined configuration options at your pytainer.toml file, this is how you get this data
 config = pytaineripc.getConfig()
@@ -178,7 +178,7 @@ You may also poll notifications manually - Note, this does NOT work for events!
 
 ```python
 # Manual polling for new notifications
-response = pytaineripc.poll('MYIDENT')
+response = pytaineripc.poll()
 ```
 `MYIDENT` is the ident of the receiving app. Response data comes in an array. Call this function frequently to receive other apps notifications. Once polled, performe actions with the data. The next poll will be empty, unless new notifications for your app arrived.
 
