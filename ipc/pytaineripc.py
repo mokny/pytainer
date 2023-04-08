@@ -25,7 +25,7 @@ _repoident = False
 
 
 
-def init(repo, notificationHandler = False, eventHandler = False):
+def _init(repo, notificationHandler = False, eventHandler = False):
     global _clientport
     global _clientkey
     global _initialized
@@ -208,4 +208,4 @@ class _PollHandler(threading.Thread):
 
 
 ##### Init
-init(_launcher, False, False)
+_init(_launcher, False, False)
