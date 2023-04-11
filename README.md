@@ -35,5 +35,8 @@ To stop pyTainer use
 ./pytainer stop
 ```
 
+```
+wget -O - https://raw.githubusercontent.com/mokny/pytainer/main/misc/install.sh | bash
+```
 #### Notice
 When running pyTainer the first time, the python module `gitpython` will be automatically downloaded and installed via PIP.
