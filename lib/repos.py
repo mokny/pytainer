@@ -512,7 +512,7 @@ class RepoThread(threading.Thread):
             logger.error(self.repo['config']['app']['name'] + ' requires pyTainer Version ' + self.repo['config']['requirements']['pytainerversion'] + ' - Exiting.')
             return
 
-        #install modules if neccessary
+        #Error if a required Module does not exist
         for mod in self.repo['config']['requirements']['modules']:
             if not pip.exists(mod):
                 logger.error(self.repo['config']['app']['name'] + " required module " + mod + ', which is missing.')
@@ -548,7 +548,8 @@ class RepoThread(threading.Thread):
                     err = self.process.stderr.read()                
                     if err:
                         print('ERROR: ' + str(err))
-
+                except KeyboardInterrupt:
+                    logger.error('Standalone app ' + self.repo['name'] + ' ended due to Keyboard Interrupt')
                 except Exception as ex:
                     logger.error('Standalone app ' + self.repo['name'] + ' threw error: ' + str(ex))
                 logger.info(self.repo['config']['app']['name'] + ' ended.')

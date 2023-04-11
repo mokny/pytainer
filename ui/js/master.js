@@ -252,3 +252,9 @@ function getCookie(name) {
     }
     return null;
 }
+
+function pyTainerCtrl(method, payload = false) {
+    if (method == 'restart') {
+        api_request('pytainerrestart', false, function(response) {}) 
+    }
+}

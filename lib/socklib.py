@@ -99,6 +99,11 @@ class Server(threading.Thread):
                 try:
                     self.log("Incoming connection from " + str(addr))
                     self.events["PRECONNECT"](addr[0])
+                except KeyboardInterrupt:
+                    print("Server Keyboard interrupt")
+                    self.s.close()
+                    self.running = False
+                    
                 except:
                     pass
                 client = _ServerClient(self, c, addr, self.connectionID)
@@ -447,6 +452,9 @@ class _ServerClient(threading.Thread):
                             stopbuffer = parts[1]
                             parts = stopbuffer.split(self.svr.stopbyte, 1)
                         stopbuffer = parts[0]
+            except KeyboardInterrupt:
+                self.disconnect()
+                return
 
             except Exception as ex:
                 print(f"Unexpected {ex=}, {type(ex)=}")

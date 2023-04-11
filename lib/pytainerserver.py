@@ -9,6 +9,8 @@ import urllib
 import apihandler
 import uuid
 import vars
+import sys
+import signal
 
 sessions = {}
 
@@ -147,3 +149,4 @@ def listen(host, port):
     except:
         pass
     logger.info("Server closed")
+    os.kill(os.getpid(), signal.SIGTERM)

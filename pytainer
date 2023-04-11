@@ -1,0 +1,73 @@
+#!/usr/bin/python
+SM_LIVE = 0
+SM_BACKGROUND = 1
+
+import sys
+import os
+import subprocess
+import time
+import pathlib
+import signal
+abspath = str(pathlib.Path(__file__).parent.resolve())
+
+#Custom modules
+sys.path.insert(0, abspath + '/lib')
+import shellib
+
+abspath = str(pathlib.Path(__file__).parent.resolve())
+
+def kill(wait = True):
+    try:
+        if os.path.isfile(abspath + '/tmp/pid.txt'):
+            pid_file = open(abspath + '/tmp/pid.txt', 'r')
+            data = pid_file.read()
+            pid_file.close()
+            os.kill(int(data), signal.SIGTERM)
+            print("Terminated old pyTainer Instance...")
+            if wait:
+                print("Waiting 5 seconds...")
+                time.sleep(5)
+        return True
+    except:
+        return False
+
+def start(method, args):
+    cmd = 'python '+abspath+'/_pytainer_instance.py'
+    if method == SM_LIVE:
+        os.system(cmd + ' -l')
+    elif method == SM_BACKGROUND:
+        print("Starting pyTainer...")
+        subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+   
+if not os.path.isdir(abspath + '/tmp'):
+    os.mkdir(abspath + '/tmp')
+
+
+args = sys.argv
+args.pop(0)
+
+if len(args) == 0:
+    print('Usage: start restart stop live install')
+
+elif args[0] == 'start' or args[0] == 'restart':
+    kill()        
+    start(SM_BACKGROUND, args)
+    print("Done.")
+
+elif args[0] == 'stop':
+    if not kill(False):
+        print('pyTainer is not running.')
+    print("Done.")
+
+elif args[0] == 'live':
+    kill()        
+    start(SM_LIVE, args)
+
+elif args[0] == 'install':
+    kill()
+    os.system('python '+abspath+'/_pytainer_instance.py -i fresh')
+
+else:     
+    print('Usage: start stop live')
+
+

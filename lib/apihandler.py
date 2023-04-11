@@ -12,6 +12,7 @@ import pytaineripcserver
 import functools
 import triggers
 import pip
+import subprocess
 
 try:
     import toml as tomlreader
@@ -381,6 +382,10 @@ def apiCall(request, path, data):
                 with open(basepath + '/README.md', 'r') as file:
                     response['OK'] = True
                     response['DATA'] = file.read()
+
+    elif path == '/pytainerrestart':
+        if response['AUTHED']:
+            subprocess.Popen(vars.path + '/pytainer restart', shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     else:
         response['ERR'] = 'Unknown Method'
