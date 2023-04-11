@@ -81,6 +81,12 @@ def setEventHandler(eventHandler):
         return True
     return False        
 
+def getIdent():
+    return _repoident
+
+def setIdent(ident):
+    _repoident = ident
+
 def destroy():
     if _poller:
         _poller.running = False
