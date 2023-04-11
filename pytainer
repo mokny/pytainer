@@ -13,8 +13,20 @@ abspath = str(pathlib.Path(__file__).parent.resolve())
 #Custom modules
 sys.path.insert(0, abspath + '/lib')
 import shellib
+import pip
 
 abspath = str(pathlib.Path(__file__).parent.resolve())
+
+if not pip.exists('git'):
+    print('Installing GITPYTHON...')
+    pip.install('gitpython')
+    import git
+
+if not pip.exists('shutil'):
+    print('Installing SHUTIL...')
+    pip.install('shutil')
+    import git
+
 
 def kill(wait = True):
     try:
