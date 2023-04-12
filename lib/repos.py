@@ -490,9 +490,11 @@ class RepoThread(threading.Thread):
         self.config = {}
         self.output = []
         self.ps = False
+        self.wd = False
 
     def setRepo(self,repo):
         self.repo = repo
+        self.wd = repo['path']
         if 'config' in self.repo['config']:
             for key in self.repo['config']['config']:
                 if 'value' in self.repo['config']['config'][key]:
@@ -538,7 +540,7 @@ class RepoThread(threading.Thread):
                     cmdparams.append(self.repo['config']['app']['args'].strip())
 
                 try:
-                    self.process = subprocess.Popen(cmdparams, stdout = subprocess.PIPE, stdin = subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                    self.process = subprocess.Popen(cmdparams, stdout = subprocess.PIPE, stdin = subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, cwd=self.wd)
                     self.ps = psutil.Process(self.process.pid)
                     while self.running:
                         line = self.process.stdout.readline()
